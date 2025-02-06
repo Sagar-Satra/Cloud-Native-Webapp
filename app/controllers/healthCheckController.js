@@ -4,6 +4,9 @@ import { setNoCacheHeaders } from "../utils/headers.js";
 export const getHealthController = async (req, res) => {
     try {
         setNoCacheHeaders(res);
+        if (Object.keys(req.query).length > 0) {
+            return res.status(400).send();
+        }
         if(req.body && Object.keys(req.body).length > 0 ){
             return res.status(400).send();
         }

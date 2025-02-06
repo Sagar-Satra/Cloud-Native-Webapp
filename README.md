@@ -35,3 +35,6 @@
         c. curl -vvvv -X POST http://localhost:8080/healthz
         d. curl -vvvv -X DELETE http://localhost:8080/healthz
         e. curl -vvvv -X PATCH http://localhost:8080/healthz
+
+
+7. Testing the APIs using 

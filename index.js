@@ -6,7 +6,7 @@ import initApp from './app/app.js';
 import { healthCheckModel } from './app/database/schema/healthCheckModel.js';
 
 dotenv.config();
-const app = express();
+export const app = express();
 const port = process.env.PORT;
 initApp(app)
 
@@ -20,3 +20,4 @@ app.listen(port , async () => {
         console.error('Unable to connect to the database:', error);
       }
 })
+
