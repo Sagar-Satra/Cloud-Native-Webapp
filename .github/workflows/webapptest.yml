@@ -33,7 +33,7 @@ jobs:
         run: sudo cat /var/log/mysql/error.log
 
       - name: Verify Sequelize connection
-        run: node -e "require('./app/database/db').authenticate().then(() => console.log('Connection has been established successfully.')).catch(err => console.error('Unable to connect to the database:', err));"
+        run: node -e "import('./app/database/db.js').then(({ authenticate }) => authenticate()).catch(err => console.error('Unable to connect to the database:', err));"
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
