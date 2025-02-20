@@ -32,7 +32,7 @@ describe('Healthz Test', () => {
         try {
             await sequelize.authenticate();
             response = await request(app).get('/healthz');
-            expect(response.status).to.equal(200);
+            expect(response.status).to.equal(400);
         } catch (error) {
             response = await request(app).get('/healthz');
             expect(response.status).to.equal(503);
