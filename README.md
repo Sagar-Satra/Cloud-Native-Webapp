@@ -37,4 +37,35 @@
         e. curl -vvvv -X PATCH http://localhost:8080/healthz
 
 
-7. Testing the APIs using 
+
+7. Run below command to implement API testing
+   npm test
+
+8.  Setup for running the script
+   - Download the zip from canvas and place it into a folder and open the cmd and navigate into that directory
+   - Deploy the droplet and copy the IP address
+   - Establish the connection using SSH command: ssh -i C:\Users\sagar\.ssh\do root@IPADDRESS
+   - scp the zip file into the  "/tmp/ directory" using command : scp -i C:\Users\sagar\.ssh\do webapp.zip root@137.184.63.120:/tmp/
+   - copy the .env and shellscript file into the same folder
+   - scp -i C:\Users\sagar\.ssh\do setupapp.sh root@137.184.63.120:/tmp/
+   - scp -i C:\Users\sagar\.ssh\do .env root@137.184.63.120:/tmp/
+   - Unzip the application file into the /tmp/ directory using command: sudo unzip -o /tmp/webapp.zip -d /tmp/
+   - chmod +x setupapp.sh
+   - ./setupapp.sh
+   - Move the .env into the web app - sudo mv /tmp/.env /opt/csye6225/webapp/
+   - cd /opt/csye6225/webapp
+   - Start the application: node index.js
+  
+- 9.  If permission denied:
+      - mysql -u root -p;
+      - SELECT user, host, authentication_string FROM mysql.user;
+      - DROP USER IF EXISTS 'sagar'@'localhost';
+      - CREATE USER 'sagar'@'localhost' IDENTIFIED BY 'sagar123';
+      - GRANT ALL PRIVILEGES ON cloud_native.* TO 'sagar'@'localhost';
+      - FLUSH PRIVILEGES;
+    - or 
+    - ALTER USER 'sagar'@'localhost' IDENTIFIED BY 'newpassword';
+  - Might have to kill the SQL server
+  - sudo lsof -i :8080
+  - sudo kill -9 (1234) change the number
+  - then node index.js
