@@ -3,6 +3,7 @@ import { use, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import { app } from '../index.js';
 import sequelize from '../app/database/db.js';
+import sinon from 'sinon';
 
 const chai = use(chaiHttp);
 
