@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 2
 
     env:
       DB_NAME: ${{ secrets.DB_NAME }}
@@ -16,29 +16,24 @@ jobs:
       DB_HOST: '127.0.0.1'
       PORT: ${{ secrets.PORT }}
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-          MYSQL_USER: ${{ secrets.DB_USERNAME }}
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping --silent" --health-timeout=20s --health-retries=3
-
-
     steps:
       - name: Checkout the repository to the runner
         uses: actions/checkout@v2
 
-   
-      - name: Wait for MySQL to be ready
+      - name: Set up MySQL
         run: |
-            until mysql -h 127.0.0.1 -u${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }} -e "SELECT 1"; do
-            echo "Waiting for MySQL to be ready..."
-            sleep 5
-            done
+            sudo /etc/init.d/mysql start
+            mysql -e 'CREATE DATABASE ${{ env.DB_NAME }};' -u${{ env.DB_USERNAME }} -p${{ env.DB_PASSWORD }}
+        timeout-minutes: 1
+
+      - name: Check MySQL service status
+        run: sudo /etc/init.d/mysql status
+
+      - name: Check MySQL error log
+        run: sudo cat /var/log/mysql/error.log
+
+      - name: Verify Sequelize connection
+        run: node -e "require('./app/database/db').authenticate().then(() => console.log('Connection has been established successfully.')).catch(err => console.error('Unable to connect to the database:', err));"
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -54,4 +49,3 @@ jobs:
       - name: Run tests
         run: npm test
 
-    
