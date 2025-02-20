@@ -11,9 +11,9 @@ describe('Healthz Test', () => {
     const invalidMethods = ['put', 'post', 'patch', 'delete'];
 
     // Closing the Sequelize connection after each test
-    after(async () => {
-        await sequelize.close();
-    });
+    // after(async () => {
+    //     await sequelize.close();
+    // });
 
     // Get API request testing
     it('Gets the health of the database', async () => {
