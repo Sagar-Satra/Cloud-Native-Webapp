@@ -10,35 +10,40 @@ describe('Healthz Test', () => {
 
     const invalidMethods = ['put', 'post', 'patch', 'delete'];
 
-    // Closing the Sequelize connection after each test
+    // Ensure database connection is established before running tests
+    before(async () => {
+        try {
+            await sequelize.authenticate();
+            console.log("Database connection established for tests.");
+        } catch (error) {
+            console.error("Failed to connect to the database:", error);
+        }
+    });
+
+    // Closing the Sequelize connection after all tests
     after(async () => {
         await sequelize.close();
+        console.log("Database connection closed after tests.");
     });
 
     // Get API request testing
     it('Gets the health of the database', async () => {
+        let response;
         try {
             await sequelize.authenticate();
-            const response = await request(app).get('/healthz');
+            response = await request(app).get('/healthz');
             expect(response.status).to.equal(200);
-
-            expect(response.header['cache-control']).to.exist;
-            expect(response.header['cache-control']).to.include('no-cache');
-            expect(response.header['cache-control']).to.include('no-store');
-            expect(response.header['cache-control']).to.include('must-revalidate');
-
-            expect(response.header['pragma']).to.exist;
-            expect(response.header['pragma']).to.equal('no-cache');
         } catch (error) {
-
-            // catching when Sequelize cannot authenticate
-            const response = await request(app).get('/healthz');
+            response = await request(app).get('/healthz');
             expect(response.status).to.equal(503);
-            expect(response.header['cache-control']).to.exist;
-            expect(response.header['cache-control']).to.include('no-cache');
-            expect(response.header['cache-control']).to.include('no-store');
-            expect(response.header['cache-control']).to.include('must-revalidate');
         }
+
+        expect(response.header['cache-control']).to.exist;
+        expect(response.header['cache-control']).to.include('no-cache');
+        expect(response.header['cache-control']).to.include('no-store');
+        expect(response.header['cache-control']).to.include('must-revalidate');
+        expect(response.header['pragma']).to.exist;
+        expect(response.header['pragma']).to.equal('no-cache');
     });
 
     // Testing for payload
@@ -64,7 +69,7 @@ describe('Healthz Test', () => {
         expect(response.header['cache-control']).to.include('must-revalidate');
     });
 
-    // testing for invalid methods
+    // Testing for invalid HTTP methods
     invalidMethods.forEach(method => {
         it(`${method} method not allowed. Request fails`, async () => {
             const response = await request(app)[method]('/healthz');
@@ -77,16 +82,12 @@ describe('Healthz Test', () => {
     });
 
     // Simulating an unavailable database by closing the connection
-    // it('Throws error status 503 if database is unavailable', async () => {
-        
-    //     await sequelize.close();
-        
-    //     const response = await request(app).get('/healthz');
-        
-    //     expect(response.status).to.equal(503);
-    //     expect(response.header['cache-control']).to.exist;
-    //     expect(response.header['cache-control']).to.include('no-cache');
-    //     expect(response.header['cache-control']).to.include('no-store');
-    //     expect(response.header['cache-control']).to.include('must-revalidate');
-    // });
+    it('Throws error status 503 if database is unavailable', async () => {
+        await sequelize.close(); // Simulate database unavailability
+        const response = await request(app).get('/healthz');
+        expect(response.status).to.equal(503);
+
+        // Restart the connection for the remaining tests
+        await sequelize.authenticate();
+    });
 });
