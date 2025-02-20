@@ -8,37 +8,35 @@ const chai = use(chaiHttp);
 
 describe('Healthz Test', () => {
 
-    const invalidMethods = ['put', 'post', 'patch', 'delete'];
+    let sequelizeMock; // Add this line
 
-    // Closing the Sequelize connection after each test
-    // after(async () => {
-    //     await sequelize.close();
-    // });
+    before(() => {
+        sequelizeMock = sinon.stub(sequelize, 'authenticate'); // Mock sequelize.authenticate
+    });
+
+    afterEach(() => {
+        sequelizeMock.reset(); // Reset mock after each test
+    });
+
+    after(() => {
+        sequelizeMock.restore(); // Restore original functionality after all tests
+    });
+
+    const invalidMethods = ['put', 'post', 'patch', 'delete'];
 
     // Get API request testing
     it('Gets the health of the database', async () => {
-        try {
-            await sequelize.authenticate();
-            const response = await request(app).get('/healthz');
-            expect(response.status).to.equal(200);
+        sequelizeMock.resolves(); // Simulate successful authentication
+        const response = await request(app).get('/healthz');
+        expect(response.status).to.equal(200);
 
-            expect(response.header['cache-control']).to.exist;
-            expect(response.header['cache-control']).to.include('no-cache');
-            expect(response.header['cache-control']).to.include('no-store');
-            expect(response.header['cache-control']).to.include('must-revalidate');
+        expect(response.header['cache-control']).to.exist;
+        expect(response.header['cache-control']).to.include('no-cache');
+        expect(response.header['cache-control']).to.include('no-store');
+        expect(response.header['cache-control']).to.include('must-revalidate');
 
-            expect(response.header['pragma']).to.exist;
-            expect(response.header['pragma']).to.equal('no-cache');
-        } catch (error) {
-
-            // catching when Sequelize cannot authenticate
-            const response = await request(app).get('/healthz');
-            expect(response.status).to.equal(503);
-            expect(response.header['cache-control']).to.exist;
-            expect(response.header['cache-control']).to.include('no-cache');
-            expect(response.header['cache-control']).to.include('no-store');
-            expect(response.header['cache-control']).to.include('must-revalidate');
-        }
+        expect(response.header['pragma']).to.exist;
+        expect(response.header['pragma']).to.equal('no-cache');
     });
 
     // Testing for payload
