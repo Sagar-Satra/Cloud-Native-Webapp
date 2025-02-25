@@ -14,6 +14,7 @@ describe('Healthz Test', () => {
     before(async () => {
         try {
             await sequelize.authenticate();
+            await sequelize.sync();
             console.log("Database connection established for tests.");
         } catch (error) {
             console.error("Failed to connect to the database:", error);
@@ -23,7 +24,7 @@ describe('Healthz Test', () => {
     // Closing the Sequelize connection after all tests
     after(async () => {
         await sequelize.close();
-        console.log("Database connection closed after tests.");
+        console.log("Database connection closed after all tests.");
     });
 
     // Get API request testing

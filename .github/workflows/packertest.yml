@@ -1,0 +1,24 @@
+name: Formatting and Validation for Packer
+
+on: 
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Checkout the repository to the runner
+        uses: actions/checkout@v3
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@v2
+
+      - name: Run Packer Format Check
+        run: packer fmt -check -diff packer/template.pkr.hcl
+
+      - name: Run Packer Validate
+        run: packer validate packer/template.pkr.hcl
