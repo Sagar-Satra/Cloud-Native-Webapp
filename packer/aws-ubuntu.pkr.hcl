@@ -10,7 +10,7 @@ packer {
 variable "ami_name1" {
   description = "The name of the AMI to be created."
   default     = "csye6225-webapp-ami"
-  type = string
+  type        = string
 }
 
 variable "instance_type1" {
@@ -37,7 +37,7 @@ variable "ubuntu_ami_image1" {
 variable "user_name1" {
   description = "The username for the EC2 instance."
   default     = "ubuntu"
-  type       = string
+  type        = string
 }
 
 
@@ -51,7 +51,7 @@ source "amazon-ebs" "ubuntu" {
 }
 
 build {
-  name    = "Webapp build"
+  name = "Webapp build"
   sources = [
     "source.amazon-ebs.ubuntu",
   ]
@@ -65,7 +65,7 @@ build {
     source      = "../webapp.zip"
     destination = "/tmp/webapp.zip"
   }
-  
+
   provisioner "shell" {
     inline = [
       "chmod +x /tmp/setup.sh",
