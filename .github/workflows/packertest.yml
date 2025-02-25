@@ -18,7 +18,7 @@ jobs:
         uses: hashicorp/setup-packer@v2
 
       - name: Run Packer Format Check
-        run: packer fmt -check -diff packer/template.pkr.hcl
+        run: packer fmt -check -diff packer/aws-ubuntu.pkr.hcl
 
       - name: Run Packer Validate
-        run: packer validate packer/template.pkr.hcl
+        run: packer validate packer/aws-ubuntu.pkr.hcl
