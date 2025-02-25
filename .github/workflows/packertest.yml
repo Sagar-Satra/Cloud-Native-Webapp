@@ -18,10 +18,10 @@ jobs:
         uses: hashicorp/setup-packer@v2
 
       - name: Run Packer init
-        run: packer init -recursive ./packer
+        run: packer init ./packer
 
       - name: Run Packer Format Check
-        run: packer fmt -check -diff -recursive ./packer
+        run: packer fmt -check -diff ./packer
 
       - name: Run Packer Validate
-        run: packer validate -recursive ./packer
+        run: packer validate ./packer
