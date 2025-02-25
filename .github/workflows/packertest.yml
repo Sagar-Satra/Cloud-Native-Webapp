@@ -17,8 +17,11 @@ jobs:
       - name: Set up Packer
         uses: hashicorp/setup-packer@v2
 
+      - name: Run Packer init
+        run: packer int -recursive ./packer
+
       - name: Run Packer Format Check
-        run: packer fmt -check -diff packer/aws-ubuntu.pkr.hcl
+        run: packer fmt -check -diff -recursive ./packer
 
       - name: Run Packer Validate
-        run: packer validate packer/aws-ubuntu.pkr.hcl
+        run: packer validate -recursive ./packer
