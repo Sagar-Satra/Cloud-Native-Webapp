@@ -18,7 +18,7 @@ jobs:
         uses: hashicorp/setup-packer@v2
 
       - name: Run Packer init
-        run: packer int -recursive ./packer
+        run: packer init -recursive ./packer
 
       - name: Run Packer Format Check
         run: packer fmt -check -diff -recursive ./packer
