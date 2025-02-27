@@ -10,11 +10,11 @@ jobs:
     timeout-minutes: 2
 
     env:
-      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_NAME: ${{ vars.DB_NAME }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_HOST: '127.0.0.1'
-      PORT: ${{ secrets.PORT }}
+      DB_HOST: ${{ vars.HOST }}
+      PORT: ${{ vars.PORT }}
 
     steps:
       - name: Checkout the repository to the runner

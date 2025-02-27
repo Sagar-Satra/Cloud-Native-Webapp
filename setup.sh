@@ -42,9 +42,6 @@ sudo mkdir -p /opt/csye6225
 sudo chown -R csye6225:csye6225 /opt/csye6225
 sudo chmod 755 /opt/myapp
 
-# Copy and extract application files
-echo "Deploying application..."
-sudo unzip -o /tmp/webapp.zip -d /opt/csye6225/
 
 # Change to app directory and install dependencies
 cd /opt/csye6225/webapp || exit
