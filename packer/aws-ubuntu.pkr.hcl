@@ -145,7 +145,7 @@ build {
 
   provisioner "file" {
     source      = "../webapp"
-    destination = "/tmp/webapp"
+    destination = "/tmp/webapp/"
   }
 
 
@@ -178,8 +178,8 @@ build {
 
       # Setup application directory
       "echo 'Setting up application directory...'",
-      "sudo mkdir -p /opt/csye6225/webapp",
-      "sudo cp -R /tmp/webapp/* /opt/csye6225/webapp/",
+      "sudo mkdir -p /opt/csye6225",
+      "sudo cp -R /tmp/webapp/* /opt/csye6225/",
     ]
   }
 
@@ -260,7 +260,7 @@ build {
   provisioner "shell" {
     inline = [
       # copying systemd service file
-      "sudo cp /tmp/webapp/packer/app.service /etc/systemd/system/app.service",
+      "sudo cp /tmp/webapp/webapp/packer/app.service /etc/systemd/system/app.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable app",
       "sudo systemctl start app"
