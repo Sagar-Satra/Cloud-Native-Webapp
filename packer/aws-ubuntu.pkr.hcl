@@ -71,7 +71,8 @@ variable "app_port" {
 variable "account_ids1" {
   description = "AWS account IDs that can use the AMI"
   type        = list(string)
-  default     = ["904233096435"]
+  # default     = ["904233096435"]
+  default     = split(",", "904233096435")
 }
 
 source "amazon-ebs" "ubuntu" {
