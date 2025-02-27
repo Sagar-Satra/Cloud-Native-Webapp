@@ -178,8 +178,8 @@ build {
 
       # Setup application directory
       "echo 'Setting up application directory...'",
-      "sudo mkdir -p /opt/csye6225/webapp",
-      "sudo cp -R /tmp/webapp/* /opt/csye6225/webapp/",
+      "sudo mkdir -p /opt/csye6225",
+      "sudo cp -R /tmp/webapp/* /opt/csye6225/",
     ]
   }
 
@@ -201,7 +201,7 @@ build {
       "echo 'Debugging source paths...'",
       "ls -a /tmp",
       "echo 'Debugging source paths2...'",
-      "ls -a /tmp/webapp/webapp || echo 'Source directory does not exist'",
+      "ls -a /tmp/webapp/ || echo 'Source directory does not exist'",
       "echo 'Debugging source paths3...'",
       "ls -a /opt/csye6225/webapp/ || echo 'Destination directory does not exist'",
       "echo 'Debugging source paths4...'",
