@@ -24,14 +24,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.SERVICE_AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Create /tmp/webapp Directory
-        run: mkdir -p /tmp/webapp
+      # - name: Create /tmp/webapp Directory
+      #   run: mkdir -p /tmp/webapp
   
-      - name: Copy Files to /tmp/webapp
-        run: cp -r $GITHUB_WORKSPACE/* /tmp/webapp/
+      # - name: Copy Files to /tmp/webapp
+      #   run: cp -r $GITHUB_WORKSPACE/* /tmp/webapp/
   
-      - name: List /tmp/webapp Contents
-        run: ls -lah /tmp/webapp
+      # - name: List /tmp/webapp Contents
+      #   run: ls -lah /tmp/webapp
 
       - name: Initialize Packer (Install required plugins)
         run: packer init ./packer
