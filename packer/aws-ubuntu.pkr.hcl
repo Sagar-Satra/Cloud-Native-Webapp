@@ -153,7 +153,7 @@ build {
     inline = [
       # Install MySQL and other dependencies
       "echo 'Installing MySQL and other packages service...'",
-      "sudo apt-get install -y mysql-server unzip pkg-config libmysqlclient-dev",
+      "sudo apt-get install -y mysql-server pkg-config libmysqlclient-dev",
       "sudo systemctl enable mysql",
       "sudo systemctl start mysql",
     ]
