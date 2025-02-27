@@ -118,6 +118,7 @@ source "amazon-ebs" "ubuntu" {
 #   volume_type           = "gp2"
 # }
 
+
 build {
   name = "Webapp build"
   sources = [
