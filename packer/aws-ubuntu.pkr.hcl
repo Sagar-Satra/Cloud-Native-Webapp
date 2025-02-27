@@ -250,7 +250,7 @@ build {
       # Change to app directory and install dependencies
       "cd /opt/csye6225/webapp/ || exit",
       "echo 'Installing application dependencies...'",
-      "sudo -u csye6225 npm install"
+      "sudo -u csye6225 npm install",
 
       "echo 'checing systemd'",
       "ls -a /opt/csye6225/webapp/packer || echo 'Failed to list webapp directory'"
