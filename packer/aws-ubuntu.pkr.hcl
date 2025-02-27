@@ -187,19 +187,24 @@ build {
       "echo 'Copying application files...'",
       "sudo cp -r /tmp/webapp/* /opt/csye6225/webapp/",
 
+      # Create .env file first with sudo
+      "echo 'Creating .env file...'",
+      "sudo touch /opt/csye6225/webapp/.env",
+
       # Set ownership and permissions
       "echo 'Setting ownership and permissions for application files...'",
       "sudo chown -R csye6225:csye6225 /opt/csye6225/webapp",
       "sudo chmod -R 755 /opt/csye6225/webapp",
+      "sudo chmod 600 /opt/csye6225/webapp/.env",
 
       # Create .env file with environment variables
       # Set environment variables for MySQL connection
       "echo 'Setting environment variables for MySQL connection...'",
-      "echo 'export DB_USERNAME=${var.mysql_user}' >> /opt/csye6225/webapp/.env",
-      "echo 'export DB_PASSWORD=${var.mysql_password}' >> /opt/csye6225/webapp/.env",
-      "echo 'export HOST=${var.mysql_host}' >> /opt/csye6225/webapp/.env",
-      "echo 'export DB_NAME=${var.db_name}' >> /opt/csye6225/webapp/.env",
-      "echo 'export PORT=${var.app_port}' >> /opt/csye6225/webapp/.env",
+      "sudo bash -c 'echo \"export DB_USERNAME=${var.mysql_user}\" >> /opt/csye6225/webapp/.env'",
+      "sudo bash -c 'echo \"export DB_PASSWORD=${var.mysql_password}\" >> /opt/csye6225/webapp/.env'",
+      "sudo bash -c 'echo \"export HOST=${var.mysql_host}\" >> /opt/csye6225/webapp/.env'",
+      "sudo bash -c 'echo \"export DB_NAME=${var.db_name}\" >> /opt/csye6225/webapp/.env'",
+      "sudo bash -c 'echo \"export PORT=${var.app_port}\" >> /opt/csye6225/webapp/.env'"
     ]
   }
 
