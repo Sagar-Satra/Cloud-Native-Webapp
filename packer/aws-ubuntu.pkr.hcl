@@ -125,13 +125,8 @@ build {
     "source.amazon-ebs.ubuntu",
   ]
 
-  # provisioner "file" {
-  #   source      = "../../webapp"
-  #   destination = "/tmp/webapp"
-  # }
-
   provisioner "file" {
-    source      = "../webapp.zip"
+    source      = "../../webapp"
     destination = "/tmp/webapp"
   }
 
@@ -191,14 +186,11 @@ build {
       "echo 'Checking source directory contents...'",
       "ls -la /tmp/webapp/",
       "ls -lah /tmp/webapp",
+      "ls -lah /tmp",
 
-      # # Copy application files
-      # "echo 'Copying application files...'",
-      # "sudo cp -r /tmp/webapp/* /opt/csye6225/webapp/",
-
-      "echo Unzipping the application files into the directory",
-      "sudo unzip -o /tmp/webapp.zip -d /opt/csye6225/",
-      "echo Unzipping finished",
+      # Copy application files
+      "echo 'Copying application files...'",
+      "sudo cp -r /tmp/webapp/* /opt/csye6225/webapp/",
 
       # Create .env file first with sudo
       "echo 'Creating .env file...'",
