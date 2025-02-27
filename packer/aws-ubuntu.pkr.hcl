@@ -64,8 +64,8 @@ variable "db_name" {
 
 variable "app_port" {
   description = "app port"
-  default     = 8080
-  type        = number
+  default     = "8080"
+  type        = string
 }
 
 source "amazon-ebs" "ubuntu" {
