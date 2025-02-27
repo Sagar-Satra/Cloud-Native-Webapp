@@ -198,10 +198,11 @@ build {
 
   provisioner "shell" {
     inline = [
-      # "echo 'Debugging source paths...'",
-      # "ls -la /tmp",
-      # "ls -la /tmp/webapp/ || echo 'Source directory does not exist'",
-
+      "echo 'Debugging source paths...'",
+      "ls -a /tmp",
+      "ls -a /tmp/webapp/ || echo 'Source directory does not exist'",
+      "ls -a /opt/csye6225/webapp/ || echo 'Destination directory does not exist'",
+      "ls -a /opt/csye6225/ || echo 'Parent directory does not exist'",
       # "if [ ! -d '/tmp/webapp' ]; then",
       # "  sudo mkdir -p /tmp/webapp",
       # "  echo 'Created /tmp/webapp directory'",
