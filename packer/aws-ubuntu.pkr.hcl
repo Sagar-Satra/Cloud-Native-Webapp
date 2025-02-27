@@ -205,7 +205,7 @@ build {
       "echo 'Debugging source paths3...'",
       "ls -a /opt/csye6225/webapp/ || echo 'Destination directory does not exist'",
       "echo 'Debugging source paths4...'",
-      "ls -a /opt/csye6225/ || echo 'Parent directory does not exist'",
+      "ls -a /opt/csye6225/webapp/packer/ || echo 'Parent directory does not exist'",
       # "if [ ! -d '/tmp/webapp' ]; then",
       # "  sudo mkdir -p /tmp/webapp",
       # "  echo 'Created /tmp/webapp directory'",
@@ -260,7 +260,7 @@ build {
   provisioner "shell" {
     inline = [
       # copying systemd service file
-      "sudo cp /tmp/webapp/packer/app.service /etc/systemd/system/app.service",
+      "sudo cp /tmp/webapp/webapp/packer/app.service /etc/systemd/system/app.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable app",
       "sudo systemctl start app"
