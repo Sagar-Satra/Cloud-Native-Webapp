@@ -35,7 +35,6 @@ jobs:
           DB_Name: ${{ vars.DB_NAME }}
           Port: ${{ vars.PORT }}
           Host: ${{ vars.HOST }}
-        
 
         run: |
           export PACKER_LOG=1
