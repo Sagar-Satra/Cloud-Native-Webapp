@@ -179,7 +179,7 @@ build {
       # Setup application directory
       "echo 'Setting up application directory...'",
       "sudo mkdir -p /opt/csye6225/webapp",
-      "sudo cp -R /tmp/webapp/* /opt/webapp/",
+      "sudo cp -R /tmp/webapp/* /opt/csye6225/webapp/",
     ]
   }
 
