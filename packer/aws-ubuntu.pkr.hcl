@@ -183,6 +183,9 @@ build {
       "echo 'Setting up application directory...'",
       "sudo mkdir -p /opt/csye6225/webapp",
 
+      "echo 'Checking source directory contents...'",
+      "ls -la /tmp/webapp/",
+
       # Copy application files
       "echo 'Copying application files...'",
       "sudo cp -r /tmp/webapp/* /opt/csye6225/webapp/",
@@ -195,7 +198,6 @@ build {
       "echo 'Setting ownership and permissions for application files...'",
       "sudo chown -R csye6225:csye6225 /opt/csye6225/webapp",
       "sudo chmod -R 755 /opt/csye6225/webapp",
-      "sudo chmod 600 /opt/csye6225/webapp/.env",
 
       # Create .env file with environment variables
       # Set environment variables for MySQL connection
@@ -210,6 +212,8 @@ build {
 
   provisioner "shell" {
     inline = [
+      "echo 'Verifying copied files...'",
+      "ls -la /opt/csye6225/webapp/",
       # Change to app directory and install dependencies
       "cd /opt/csye6225/webapp || exit",
       "echo 'Installing application dependencies...'",
