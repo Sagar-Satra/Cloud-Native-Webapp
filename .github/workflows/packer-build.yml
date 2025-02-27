@@ -49,15 +49,15 @@ jobs:
         run: |
           export PACKER_LOG=1
           packer build \
-            -var "ami_name1=AMI_Name" \
-            -var "instance_type1=Instance_Type" \
-            -var "aws_region1=AWS_Region" \
-            -var "ubuntu_ami_image1=Ubuntu_AMI_Image" \
-            -var "ssh_username1=SSH_User_Name" \
-            -var "mysql_user=MySQL_UserName" \
-            -var "mysql_password=MySQL_Password" \
-            -var "mysql_host=Host" \
-            -var "db_name=DB_Name" \
-            -var "app_port=Port" \
+            -var "ami_name1=${{ env. AMI_Name}}" \
+            -var "instance_type1=${{ env.Instance_Type }}" \
+            -var "aws_region1=${{ env.AWS_Region }}" \
+            -var "ubuntu_ami_image1=${{ env.Ubuntu_AMI_Image }}" \
+            -var "ssh_username1=${{ env.SSH_User_Name }}" \
+            -var "mysql_user=${{ env.MySQL_UserName }}" \
+            -var "mysql_password=${{ env.MySQL_Password }}" \
+            -var "mysql_host=${{ env.Host }}" \
+            -var "db_name=${{ env.DB_Name }}" \
+            -var "app_port=${{ env.Port }}" \
             -var "account_ids1=[\"${Account_IDs}\"]"
             ./packer/aws-ubuntu.pkr.hcl
