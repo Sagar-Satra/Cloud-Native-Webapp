@@ -153,8 +153,8 @@ build {
     inline = [
       # Alter MySQL root password and create database if not exists
       "echo 'Altering MySQL root password and ensuring database exists...'",
-      "sudo mysql -u root -e \"ALTER USER '${var.mysql_user}'@'${var.mysql_host}' IDENTIFIED WITH mysql_native_password BY '${var.mysql_password}';\"",
-      "sudo mysql -u root -e \"CREATE DATABASE IF NOT EXISTS '${var.db_name}';\"",
+      "sudo mysql -u root -p${var.mysql_password} -e \"ALTER USER '${var.mysql_user}'@'${var.mysql_host}' IDENTIFIED WITH mysql_native_password BY '${var.mysql_password}';\"",
+      "sudo mysql -u root -p${var.mysql_password} -e \"CREATE DATABASE IF NOT EXISTS '${var.db_name}';\"",
       "echo 'MySQL root password altered and database created if not exists'"
     ]
   }
