@@ -144,7 +144,7 @@ build {
   }
 
   provisioner "file" {
-    source      = "../../"
+    source      = "../webapp"
     destination = "/tmp/webapp/"
   }
 
@@ -200,8 +200,11 @@ build {
     inline = [
       "echo 'Debugging source paths...'",
       "ls -a /tmp",
+      "echo 'Debugging source paths2...'",
       "ls -a /tmp/webapp/ || echo 'Source directory does not exist'",
+      "echo 'Debugging source paths3...'",
       "ls -a /opt/csye6225/webapp/ || echo 'Destination directory does not exist'",
+      "echo 'Debugging source paths4...'",
       "ls -a /opt/csye6225/ || echo 'Parent directory does not exist'",
       # "if [ ! -d '/tmp/webapp' ]; then",
       # "  sudo mkdir -p /tmp/webapp",
