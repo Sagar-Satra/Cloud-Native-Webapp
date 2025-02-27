@@ -14,13 +14,23 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
 
+      - name: zip files
+        run: zip -r webapp.zip webapp . -x "*.git*" -x "*.github/*" -x "README.md"
+
+      - name: Upload the artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: webapp-artifacts
+          path: ./webapp.zip
+
+      - name: Download the artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: webapp-artifacts
+          path: ./webapp
+
       - name: Set up Packer
         uses: hashicorp/setup-packer@v2
-
-      # - name: Install AWS CLI
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y awscli
             
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
