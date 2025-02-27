@@ -126,7 +126,7 @@ build {
   ]
 
   provisioner "file" {
-    source      = "${path.root}/webapp"
+    source      = "${path.root}/"
     destination = "/tmp/webapp"
   }
 
