@@ -144,11 +144,11 @@ build {
   }
 
   provisioner "file" {
-    source      = "../../webapp"
+    source      = "../../"
     destination = "/tmp/webapp/"
   }
 
-  
+
   provisioner "shell" {
     inline = [
       # Install MySQL and other dependencies
