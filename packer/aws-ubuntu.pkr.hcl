@@ -196,16 +196,8 @@ build {
       "sudo mkdir -p /opt/csye6225/webapp",
 
       "echo 'Checking source directory contents...'",
-      "ls -a /tmp/webapp/",
-      "ls -a /tmp/webapp",
-      "ls -a /tmp",
-
-      # Copy application files
-      # "echo 'Copying application files...'",
-      # "sudo cp -r /tmp/webapp/* /opt/csye6225/webapp/",
-
       "if [ -d '/tmp/webapp' ]; then",
-      "  echo 'Copying application files...'",
+      "  echo 'Source directory exists, proceeding with copy...'",
       "  sudo cp -rv /tmp/webapp/* /opt/csye6225/webapp/ || echo 'Copy failed'",
       "  echo 'Files in destination directory:'",
       "  ls -a /opt/csye6225/webapp/",
