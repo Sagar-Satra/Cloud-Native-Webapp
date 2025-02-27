@@ -76,7 +76,7 @@ variable "app_port" {
 
 variable "account_ids1" {
   type    = string
-  default = "904233096435"
+  default = "180294191701"
 }
 
 locals {
