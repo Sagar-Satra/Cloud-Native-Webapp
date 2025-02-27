@@ -31,7 +31,7 @@ variable "ubuntu_ami_image1" {
   type        = string
 }
 
-variable "user_name1" {
+variable "ssh_username1" {
   description = "The username for the EC2 instance."
   default     = "ubuntu"
   type        = string
@@ -68,12 +68,38 @@ variable "app_port" {
   type        = string
 }
 
+variable "account_ids1" {
+  description = "AWS account IDs that can use the AMI"
+  type        = list(string)
+  default     = ["904233096435"]
+}
+
 source "amazon-ebs" "ubuntu" {
   ami_name      = var.ami_name1
   instance_type = var.instance_type1
   source_ami    = var.ubuntu_ami_image1
   region        = var.aws_region1
-  ssh_username  = var.user_name1
+  ssh_username  = var.ssh_username1
+
+  aws_polling {
+    delay_seconds = 120
+    max_attempts  = 50
+  }
+  ssh_timeout = "10m"
+
+  launch_block_device_mappings {
+    delete_on_termination = true
+    device_name           = "/dev/sda1"
+    volume_size           = 8
+    volume_type           = "gp2"
+  }
+
+  ami_users = var.account_ids1
+
+  tags = {
+    Name        = "csye6225-webapp-ami"
+    Description = "AMI for CSYE6225 web application"
+  }
 }
 
 # launch_block_device_mappings {

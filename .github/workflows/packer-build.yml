@@ -38,13 +38,14 @@ jobs:
           Instance_Type: ${{ vars.INSTANCE_TYPE }}
           AWS_Region: ${{ vars.AWS_REGION }}
           Ubuntu_AMI_Image: ${{ vars.UBUNTU_AMI_IMAGE }}
-          Ubuntu_User_Name: ${{ vars.UBUNTU_USER_NAME }}
+          SSH_User_Name: ${{ vars.UBUNTU_USER_NAME }}
           MySQL_UserName: ${{ secrets.DB_USERNAME }}
           MySQL_Password: ${{ secrets.DB_PASSWORD }}
           DB_Name: ${{ vars.DB_NAME }}
           Port: ${{ vars.PORT }}
           Host: ${{ vars.HOST }}
-
+          Account_IDs: ${{ secrets.ACCOUNT_IDS }}
+          
         run: |
           export PACKER_LOG=1
           packer build \
@@ -52,10 +53,11 @@ jobs:
             -var "instance_type1=Instance_Type" \
             -var "aws_region1=us-AWS_Region" \
             -var "ubuntu_ami_image1=Ubuntu_AMI_Image" \
-            -var "user_name1=Ubuntu_User_Name" \
+            -var "ssh_username1=SSH_User_Name" \
             -var "mysql_user=MySQL_UserName" \
             -var "mysql_password=MySQL_Password" \
             -var "mysql_host=Host" \
             -var "db_name=DB_Name" \
             -var "app_port=Port" \
+            -var "account_ids1=Account_IDs" \
             ./packer/aws-ubuntu.pkr.hcl
