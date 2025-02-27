@@ -59,5 +59,5 @@ jobs:
             -var "mysql_host=${{ env.Host }}" \
             -var "db_name=${{ env.DB_Name }}" \
             -var "app_port=${{ env.Port }}" \
-            -var "account_ids1=${{ env.Account_IDs }}"
+            -var "account_ids1=${{ env.Account_IDs }}" \
             ./packer/aws-ubuntu.pkr.hcl
