@@ -274,7 +274,7 @@ build {
   provisioner "shell" {
     inline = [
       # copying systemd service file
-      "sudo cp /tmp/webapp/webapp/packer/app.service /etc/systemd/system/app.service",
+      "sudo cp /opt/csye6225/webapp/packer/app.service /etc/systemd/system/app.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable app",
       "sudo systemctl start app"
