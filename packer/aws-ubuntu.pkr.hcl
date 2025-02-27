@@ -125,11 +125,6 @@ build {
     "source.amazon-ebs.ubuntu",
   ]
 
-  provisioner "file" {
-    source      = "${path.root}/"
-    destination = "/tmp/webapp"
-  }
-
   provisioner "shell" {
     inline = [
       # Update & upgrade system
@@ -139,6 +134,21 @@ build {
     ]
   }
 
+  provisioner "shell" {
+    inline = [
+      # Update & upgrade system
+      "echo 'Updating system packages...'",
+      "sudo mkdir -p /tmp/webapp",
+      "sudo chmod 777 /tmp/webapp"
+    ]
+  }
+
+  provisioner "file" {
+    source      = "../../webapp"
+    destination = "/tmp/webapp/"
+  }
+
+  
   provisioner "shell" {
     inline = [
       # Install MySQL and other dependencies
@@ -165,6 +175,11 @@ build {
       "echo 'Installing Node.js...'",
       "curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -",
       "sudo apt install -y nodejs",
+
+      # Setup application directory
+      "echo 'Setting up application directory...'",
+      "sudo mkdir -p /opt/csye6225/webapp",
+      "sudo cp -R /tmp/webapp/* /opt/webapp/",
     ]
   }
 
@@ -174,46 +189,41 @@ build {
       "echo 'Creating non-login Linux user...'",
       "sudo groupadd csye6225",
       "sudo useradd -m -g csye6225 -s /usr/sbin/nologin csye6225",
+      # Set ownership and permissions
+      "echo 'Setting ownership and permissions for application files...'",
+      "sudo chown -R csye6225:csye6225 /opt/csye6225/webapp",
+      "sudo chmod -R 750 /opt/csye6225/webapp",
     ]
   }
 
   provisioner "shell" {
     inline = [
-      "echo 'Debugging source paths...'",
-      "ls -la /tmp",
-      "ls -la /tmp/webapp/ || echo 'Source directory does not exist'",
+      # "echo 'Debugging source paths...'",
+      # "ls -la /tmp",
+      # "ls -la /tmp/webapp/ || echo 'Source directory does not exist'",
 
-      "if [ ! -d '/tmp/webapp' ]; then",
-      "  sudo mkdir -p /tmp/webapp",
-      "  echo 'Created /tmp/webapp directory'",
-      "else",
-      "  echo 'Directory /tmp/webapp already exists'",
-      "fi",
+      # "if [ ! -d '/tmp/webapp' ]; then",
+      # "  sudo mkdir -p /tmp/webapp",
+      # "  echo 'Created /tmp/webapp directory'",
+      # "else",
+      # "  echo 'Directory /tmp/webapp already exists'",
+      # "fi",
 
 
-      # Setup application directory
-      "echo 'Setting up application directory...'",
-      "sudo mkdir -p /opt/csye6225/webapp",
-
-      "echo 'Checking source directory contents...'",
-      "if [ -d '/tmp/webapp' ]; then",
-      "  echo 'Source directory exists, proceeding with copy...'",
-      "  sudo cp -rv /tmp/webapp/* /opt/csye6225/webapp/ || echo 'Copy failed'",
-      "  echo 'Files in destination directory:'",
-      "  ls -a /opt/csye6225/webapp/",
-      "else",
-      "  echo 'ERROR: Source directory /tmp/webapp does not exist'",
-      "  exit 1",
-      "fi",
+      # "echo 'Checking source directory contents...'",
+      # "if [ -d '/tmp/webapp' ]; then",
+      # "  echo 'Source directory exists, proceeding with copy...'",
+      # "  sudo cp -rv /tmp/webapp/* /opt/csye6225/webapp/ || echo 'Copy failed'",
+      # "  echo 'Files in destination directory:'",
+      # "  ls -a /opt/csye6225/webapp/",
+      # "else",
+      # "  echo 'ERROR: Source directory /tmp/webapp does not exist'",
+      # "  exit 1",
+      # "fi",
 
       # Create .env file first with sudo
       "echo 'Creating .env file...'",
       "sudo touch /opt/csye6225/webapp/.env",
-
-      # Set ownership and permissions
-      "echo 'Setting ownership and permissions for application files...'",
-      "sudo chown -R csye6225:csye6225 /opt/csye6225/webapp",
-      "sudo chmod -R 777 /opt/csye6225/webapp",
 
       # Create .env file with environment variables
       # Set environment variables for MySQL connection
@@ -230,13 +240,8 @@ build {
   }
 
 
-
-
   provisioner "shell" {
     inline = [
-      "echo 'Verifying copied files...'",
-      "ls -la /opt/csye6225/webapp/",
-      "ls -lah /opt/csye6225/webapp/package.json",
 
       # Change to app directory and install dependencies
       "cd /opt/csye6225/webapp || exit",
