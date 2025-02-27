@@ -50,5 +50,5 @@ jobs:
             -var "mysql_host=Host" \
             -var "db_name=DB_Name" \
             -var "app_port=Port" \
-            -var "account_ids1=Account_IDs" \
+            -var "account_ids1=[\"${Account_IDs}\"]" \
             ./packer/aws-ubuntu.pkr.hcl
