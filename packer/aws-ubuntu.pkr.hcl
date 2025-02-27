@@ -68,11 +68,19 @@ variable "app_port" {
   type        = string
 }
 
+# variable "account_ids1" {
+#   description = "AWS account IDs that can use the AMI"
+#   type        = list(string)
+#   default     = ["904233096435"]
+# }
+
 variable "account_ids1" {
-  description = "AWS account IDs that can use the AMI"
-  type        = list(string)
-  # default     = ["904233096435"]
-  default     = split(",", "904233096435")
+  type    = string
+  default = "904233096435"
+}
+
+locals {
+  split_array = split(",", var.account_ids1)
 }
 
 source "amazon-ebs" "ubuntu" {
@@ -95,7 +103,7 @@ source "amazon-ebs" "ubuntu" {
     volume_type           = "gp2"
   }
 
-  ami_users = var.account_ids1
+  ami_users = local.split_array
 
   tags = {
     Name        = "csye6225-webapp-ami"
