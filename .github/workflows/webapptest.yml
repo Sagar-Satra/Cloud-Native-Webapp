@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  app-build:
     runs-on: ubuntu-latest
     timeout-minutes: 2
 
