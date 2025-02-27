@@ -126,7 +126,7 @@ build {
   ]
 
   provisioner "file" {
-    source      = "../../webapp"
+    source      = "${path.root}/webapp"
     destination = "/tmp/webapp"
   }
 
@@ -145,7 +145,7 @@ build {
       "echo 'Installing MySQL and other packages service...'",
       "sudo apt-get install -y mysql-server unzip pkg-config libmysqlclient-dev",
       "sudo systemctl enable mysql",
-      "sudo systemctl start mysql"
+      "sudo systemctl start mysql",
     ]
   }
 
@@ -179,18 +179,32 @@ build {
 
   provisioner "shell" {
     inline = [
+      "echo 'Debugging source paths...'",
+      "ls -la /tmp",
+      "ls -la /tmp/webapp/ || echo 'Source directory does not exist'",
+
       # Setup application directory
       "echo 'Setting up application directory...'",
       "sudo mkdir -p /opt/csye6225/webapp",
 
       "echo 'Checking source directory contents...'",
-      "ls -la /tmp/webapp/",
-      "ls -lah /tmp/webapp",
-      "ls -lah /tmp",
+      "ls -a /tmp/webapp/",
+      "ls -a /tmp/webapp",
+      "ls -a /tmp",
 
       # Copy application files
-      "echo 'Copying application files...'",
-      "sudo cp -r /tmp/webapp/* /opt/csye6225/webapp/",
+      # "echo 'Copying application files...'",
+      # "sudo cp -r /tmp/webapp/* /opt/csye6225/webapp/",
+
+      "if [ -d '/tmp/webapp' ]; then",
+      "  echo 'Copying application files...'",
+      "  sudo cp -rv /tmp/webapp/* /opt/csye6225/webapp/ || echo 'Copy failed'",
+      "  echo 'Files in destination directory:'",
+      "  ls -a /opt/csye6225/webapp/",
+      "else",
+      "  echo 'ERROR: Source directory /tmp/webapp does not exist'",
+      "  exit 1",
+      "fi",
 
       # Create .env file first with sudo
       "echo 'Creating .env file...'",
@@ -199,7 +213,7 @@ build {
       # Set ownership and permissions
       "echo 'Setting ownership and permissions for application files...'",
       "sudo chown -R csye6225:csye6225 /opt/csye6225/webapp",
-      "sudo chmod -R 755 /opt/csye6225/webapp",
+      "sudo chmod -R 777 /opt/csye6225/webapp",
 
       # Create .env file with environment variables
       # Set environment variables for MySQL connection
@@ -208,7 +222,10 @@ build {
       "sudo bash -c 'echo \"export DB_PASSWORD=${var.mysql_password}\" >> /opt/csye6225/webapp/.env'",
       "sudo bash -c 'echo \"export HOST=${var.mysql_host}\" >> /opt/csye6225/webapp/.env'",
       "sudo bash -c 'echo \"export DB_NAME=${var.db_name}\" >> /opt/csye6225/webapp/.env'",
-      "sudo bash -c 'echo \"export PORT=${var.app_port}\" >> /opt/csye6225/webapp/.env'"
+      "sudo bash -c 'echo \"export PORT=${var.app_port}\" >> /opt/csye6225/webapp/.env'",
+
+      "echo 'Verifying application installation...'",
+      "ls -a /opt/csye6225/webapp/ || echo 'Failed to list webapp directory'"
     ]
   }
 
