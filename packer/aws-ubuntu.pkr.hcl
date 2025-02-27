@@ -183,6 +183,13 @@ build {
       "ls -la /tmp",
       "ls -la /tmp/webapp/ || echo 'Source directory does not exist'",
 
+      "if [! -d '/tmp/webapp' ]; then",
+      " sudo mkdir -p /tmp/webapp",
+      " echo 'Created /tmp/webapp directory'",
+      "else",
+      " echo 'Directory /tmp/webapp already exists'",
+
+
       # Setup application directory
       "echo 'Setting up application directory...'",
       "sudo mkdir -p /opt/csye6225/webapp",
