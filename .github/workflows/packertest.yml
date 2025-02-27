@@ -36,10 +36,10 @@ jobs:
           Port: ${{ vars.PORT }}
           Host: ${{ vars.HOST }}
           Account_IDs: ${{ secrets.ACCOUNT_IDS }}
-          
+
         run: |
           export PACKER_LOG=1
-          packer build \
+          packer validate \
             -var "ami_name1=AMI_Name" \
             -var "instance_type1=Instance_Type" \
             -var "aws_region1=us-AWS_Region" \
