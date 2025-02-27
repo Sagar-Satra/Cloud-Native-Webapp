@@ -74,13 +74,23 @@ variable "app_port" {
 #   default     = ["904233096435"]
 # }
 
-variable "account_ids1" {
+# variable "account_ids1" {
+#   type    = string
+#   default = "180294191701"
+# }
+
+# locals {
+#   split_array = split(",", var.account_ids1)
+# }
+
+variable "dev_account_id" {
   type    = string
-  default = "180294191701"
+  default = "904233096435"
 }
 
-locals {
-  split_array = split(",", var.account_ids1)
+variable "demo_account_id" {
+  type    = string
+  default = "180294191701"
 }
 
 source "amazon-ebs" "ubuntu" {
@@ -103,7 +113,11 @@ source "amazon-ebs" "ubuntu" {
     volume_type           = "gp2"
   }
 
-  ami_users = local.split_array
+  # ami_users = local.split_array
+  ami_users = [
+    var.dev_account_id,
+    var.demo_account_id,
+  ]
 
   tags = {
     Name        = "csye6225-webapp-ami"
