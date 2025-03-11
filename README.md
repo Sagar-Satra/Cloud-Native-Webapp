@@ -69,3 +69,5 @@
   - sudo lsof -i :8080
   - sudo kill -9 (1234) change the number
   - then node index.js
+ 
+  - 
