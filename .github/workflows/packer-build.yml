@@ -22,6 +22,17 @@ jobs:
           aws-access-key-id: ${{ secrets.SERVICE_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.SERVICE_AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
+      
+      - name: 'google cloud authentication'
+        uses: google-github-actions/auth@v2
+        with:
+            credentials_json: ${{ secrets.GCP_CREDENTIAL }}
+  
+      - name: 'Set up GCP SDK'
+        uses: google-github-actions/setup-gcloud@v2
+        
+      - name: 'Set up and use GCP CLI'
+        run: 'gcloud info'
 
       # - name: Create /tmp/webapp Directory
       #   run: mkdir -p /tmp/webapp
@@ -47,6 +58,7 @@ jobs:
           DB_Name: ${{ vars.DB_NAME }}
           Port: ${{ vars.PORT }}
           Host: ${{ vars.HOST }}
+          google_project_id: ${{ vars.GCP_PROJECT_ID }}
     
 
         run: |
@@ -62,4 +74,5 @@ jobs:
             -var "mysql_host=${{ env.Host }}" \
             -var "db_name=${{ env.DB_Name }}" \
             -var "app_port=${{ env.Port }}" \
+            -var "gcp_project_id=${{ env.google_project_id }}" \
             ./packer/aws-ubuntu.pkr.hcl

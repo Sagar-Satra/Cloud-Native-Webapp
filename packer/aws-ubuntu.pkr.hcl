@@ -4,6 +4,11 @@ packer {
       version = ">= 1.0.0, < 2.0.0"
       source  = "github.com/hashicorp/amazon"
     }
+
+    googlecompute = {
+      version = ">= 1, < 2"
+      source  = "github.com/hashicorp/googlecompute"
+    }
   }
 }
 
@@ -66,6 +71,21 @@ variable "app_port" {
   description = "app port"
   default     = "8080"
   type        = string
+}
+
+variable "gcp_project_id" {
+  description = "GCP project ID"
+  default     = "dev-acc-452218"
+  type        = string
+}
+
+source "googlecompute" "ubuntu" {
+  project_id          = var.gcp_project_id
+  source_image_family = "ubuntu-2404-lts-amd64"
+  image_name          = "csye6225-webapp-gcp-ami"
+  image_description   = "Webapp GCE Image packer"
+  ssh_username        = "ubuntu"
+  zone                = "us-east1-b"
 }
 
 # variable "account_ids1" {
@@ -137,6 +157,7 @@ build {
   name = "Webapp build"
   sources = [
     "source.amazon-ebs.ubuntu",
+    "source.googlecompute.ubuntu",
   ]
 
   provisioner "shell" {
