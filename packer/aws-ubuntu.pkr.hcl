@@ -82,7 +82,7 @@ variable "gcp_project_id" {
 source "googlecompute" "ubuntu" {
   project_id          = var.gcp_project_id
   source_image_family = "ubuntu-2404-lts-amd64"
-  image_name          = "csye6225-webapp-gcp-ami"
+  image_name          = "csye6225-webapp-gcp-image"
   image_description   = "Webapp GCE Image packer"
   ssh_username        = "ubuntu"
   zone                = "us-east1-b"
