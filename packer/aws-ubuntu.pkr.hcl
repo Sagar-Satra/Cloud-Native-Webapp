@@ -88,25 +88,10 @@ source "googlecompute" "ubuntu" {
   zone                = "us-east1-b"
 }
 
-# variable "account_ids1" {
-#   description = "AWS account IDs that can use the AMI"
-#   type        = list(string)
-#   default     = ["904233096435"]
-# }
-
 variable "dev_account_id" {
   type    = string
   default = "904233096435"
 }
-
-# locals {
-#   split_array = split(",", var.account_ids1)
-# }
-
-# variable "dev_account_id" {
-#   type    = string
-#   default = "904233096435"
-# }
 
 variable "demo_account_id" {
   type    = string
@@ -121,8 +106,8 @@ source "amazon-ebs" "ubuntu" {
   ssh_username  = var.ssh_username1
 
   aws_polling {
-    delay_seconds = 120
-    max_attempts  = 50
+    delay_seconds = 15
+    max_attempts  = 40
   }
   ssh_timeout = "10m"
 
@@ -144,14 +129,6 @@ source "amazon-ebs" "ubuntu" {
     Description = "AMI for CSYE6225 web application"
   }
 }
-
-# launch_block_device_mappings {
-#   delete_on_termination = true
-#   device_name           = "/dev/sda1" 
-#   volume_size           = 8
-#   volume_type           = "gp2"
-# }
-
 
 build {
   name = "Webapp build"
@@ -241,24 +218,6 @@ build {
       "ls -a /opt/csye6225/webapp/ || echo 'Destination directory does not exist'",
       "echo 'Debugging source paths4...'",
       "ls -a /opt/csye6225/webapp/packer/ || echo 'Parent directory does not exist'",
-      # "if [ ! -d '/tmp/webapp' ]; then",
-      # "  sudo mkdir -p /tmp/webapp",
-      # "  echo 'Created /tmp/webapp directory'",
-      # "else",
-      # "  echo 'Directory /tmp/webapp already exists'",
-      # "fi",
-
-
-      # "echo 'Checking source directory contents...'",
-      # "if [ -d '/tmp/webapp' ]; then",
-      # "  echo 'Source directory exists, proceeding with copy...'",
-      # "  sudo cp -rv /tmp/webapp/* /opt/csye6225/webapp/ || echo 'Copy failed'",
-      # "  echo 'Files in destination directory:'",
-      # "  ls -a /opt/csye6225/webapp/",
-      # "else",
-      # "  echo 'ERROR: Source directory /tmp/webapp does not exist'",
-      # "  exit 1",
-      # "fi",
 
       # Create .env file first with sudo
       "echo 'Creating .env file...'",
