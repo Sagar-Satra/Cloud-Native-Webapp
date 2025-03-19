@@ -156,8 +156,8 @@ build {
   }
 
   provisioner "file" {
-    source      = "../webapp/"
-    destination = "/tmp/webapp/"
+    source      = "../webapp"
+    destination = "/tmp/webapp"
   }
 
 
