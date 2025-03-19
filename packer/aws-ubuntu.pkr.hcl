@@ -5,10 +5,10 @@ packer {
       source  = "github.com/hashicorp/amazon"
     }
 
-    googlecompute = {
-      version = ">= 1, < 2"
-      source  = "github.com/hashicorp/googlecompute"
-    }
+    # googlecompute = {
+    #   version = ">= 1, < 2"
+    #   source  = "github.com/hashicorp/googlecompute"
+    # }
   }
 }
 
@@ -43,50 +43,50 @@ variable "ssh_username1" {
 }
 
 # Define GitHub Secrets for sensitive credentials
-variable "mysql_user" {
-  description = "MySQL username"
-  type        = string
-  default     = "root"
-}
+# variable "mysql_user" {
+#   description = "MySQL username"
+#   type        = string
+#   default     = "root"
+# }
 
-variable "mysql_password" {
-  description = "MySQL user password"
-  default     = "password"
-  type        = string
-}
+# variable "mysql_password" {
+#   description = "MySQL user password"
+#   default     = "password"
+#   type        = string
+# }
 
-variable "mysql_host" {
-  description = "MySQL host"
-  default     = "localhost"
-  type        = string
-}
+# variable "mysql_host" {
+#   description = "MySQL host"
+#   default     = "localhost"
+#   type        = string
+# }
 
-variable "db_name" {
-  description = "Database name"
-  default     = "cloud_native"
-  type        = string
-}
+# variable "db_name" {
+#   description = "Database name"
+#   default     = "cloud_native"
+#   type        = string
+# }
 
-variable "app_port" {
-  description = "app port"
-  default     = "8080"
-  type        = string
-}
+# variable "app_port" {
+#   description = "app port"
+#   default     = "8080"
+#   type        = string
+# }
 
-variable "gcp_project_id" {
-  description = "GCP project ID"
-  default     = "dev-acc-452218"
-  type        = string
-}
+# variable "gcp_project_id" {
+#   description = "GCP project ID"
+#   default     = "dev-acc-452218"
+#   type        = string
+# }
 
-source "googlecompute" "ubuntu" {
-  project_id          = var.gcp_project_id
-  source_image_family = "ubuntu-2404-lts-amd64"
-  image_name          = "csye6225-webapp-gcp-image"
-  image_description   = "Webapp GCE Image packer"
-  ssh_username        = "ubuntu"
-  zone                = "us-east1-b"
-}
+# source "googlecompute" "ubuntu" {
+#   project_id          = var.gcp_project_id
+#   source_image_family = "ubuntu-2404-lts-amd64"
+#   image_name          = "csye6225-webapp-gcp-image"
+#   image_description   = "Webapp GCE Image packer"
+#   ssh_username        = "ubuntu"
+#   zone                = "us-east1-b"
+# }
 
 variable "dev_account_id" {
   type    = string
@@ -134,7 +134,7 @@ build {
   name = "Webapp build"
   sources = [
     "source.amazon-ebs.ubuntu",
-    "source.googlecompute.ubuntu",
+    # "source.googlecompute.ubuntu",
   ]
 
   provisioner "shell" {
@@ -151,7 +151,7 @@ build {
       # Update & upgrade system
       "echo 'Updating system packages...'",
       "sudo mkdir -p /tmp/webapp",
-      "sudo chmod 777 /tmp/webapp"
+      "sudo chmod 755 /tmp/webapp"
     ]
   }
 
@@ -164,22 +164,23 @@ build {
   provisioner "shell" {
     inline = [
       # Install MySQL and other dependencies
-      "echo 'Installing MySQL and other packages service...'",
-      "sudo apt-get install -y mysql-server pkg-config libmysqlclient-dev",
-      "sudo systemctl enable mysql",
-      "sudo systemctl start mysql",
+      "echo 'Installing other packages service...'",
+      # "sudo apt-get install -y mysql-server pkg-config libmysqlclient-dev",
+      "sudo apt-get install -y pkg-config libmysqlclient-dev",
+      # "sudo systemctl enable mysql",
+      # "sudo systemctl start mysql",
     ]
   }
 
-  provisioner "shell" {
-    inline = [
-      # Alter MySQL root password and create database if not exists
-      "echo 'Altering MySQL root password and ensuring database exists...'",
-      "sudo mysql -u root -p${var.mysql_password} -e \"ALTER USER '${var.mysql_user}'@'${var.mysql_host}' IDENTIFIED WITH mysql_native_password BY '${var.mysql_password}';\"",
-      "sudo mysql -u root -p${var.mysql_password} -e \"CREATE DATABASE IF NOT EXISTS ${var.db_name};\"",
-      "echo 'MySQL root password altered and database created if not exists'"
-    ]
-  }
+  # provisioner "shell" {
+  #   inline = [
+  #     # Alter MySQL root password and create database if not exists
+  #     "echo 'Altering MySQL root password and ensuring database exists...'",
+  #     "sudo mysql -u root -p${var.mysql_password} -e \"ALTER USER '${var.mysql_user}'@'${var.mysql_host}' IDENTIFIED WITH mysql_native_password BY '${var.mysql_password}';\"",
+  #     "sudo mysql -u root -p${var.mysql_password} -e \"CREATE DATABASE IF NOT EXISTS ${var.db_name};\"",
+  #     "echo 'MySQL root password altered and database created if not exists'"
+  #   ]
+  # }
 
   provisioner "shell" {
     inline = [
@@ -220,17 +221,17 @@ build {
       "ls -a /opt/csye6225/webapp/packer/ || echo 'Parent directory does not exist'",
 
       # Create .env file first with sudo
-      "echo 'Creating .env file...'",
-      "sudo touch /opt/csye6225/webapp/.env",
+      # "echo 'Creating .env file...'",
+      # "sudo touch /opt/csye6225/webapp/.env",
 
       # Create .env file with environment variables
       # Set environment variables for MySQL connection
-      "echo 'Setting environment variables for MySQL connection...'",
-      "sudo bash -c 'echo \"export DB_USERNAME=${var.mysql_user}\" >> /opt/csye6225/webapp/.env'",
-      "sudo bash -c 'echo \"export DB_PASSWORD=${var.mysql_password}\" >> /opt/csye6225/webapp/.env'",
-      "sudo bash -c 'echo \"export HOST=${var.mysql_host}\" >> /opt/csye6225/webapp/.env'",
-      "sudo bash -c 'echo \"export DB_NAME=${var.db_name}\" >> /opt/csye6225/webapp/.env'",
-      "sudo bash -c 'echo \"export PORT=${var.app_port}\" >> /opt/csye6225/webapp/.env'",
+      # "echo 'Setting environment variables for MySQL connection...'",
+      # "sudo bash -c 'echo \"export DB_USERNAME=${var.mysql_user}\" >> /opt/csye6225/webapp/.env'",
+      # "sudo bash -c 'echo \"export DB_PASSWORD=${var.mysql_password}\" >> /opt/csye6225/webapp/.env'",
+      # "sudo bash -c 'echo \"export HOST=${var.mysql_host}\" >> /opt/csye6225/webapp/.env'",
+      # "sudo bash -c 'echo \"export DB_NAME=${var.db_name}\" >> /opt/csye6225/webapp/.env'",
+      # "sudo bash -c 'echo \"export PORT=${var.app_port}\" >> /opt/csye6225/webapp/.env'",
 
       "echo 'Verifying application installation...'",
       "ls -a /opt/csye6225/webapp/ || echo 'Failed to list webapp directory'"

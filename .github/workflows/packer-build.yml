@@ -1,7 +1,7 @@
 name: Packer Build
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
@@ -23,16 +23,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.SERVICE_AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
       
-      - name: 'google cloud authentication'
-        uses: google-github-actions/auth@v2
-        with:
-            credentials_json: ${{ secrets.GCP_CREDENTIAL }}
+      # Commenting the GCP code as we are not using it in this assignment
+      # - name: 'google cloud authentication'
+      #   uses: google-github-actions/auth@v2
+      #   with:
+      #       credentials_json: ${{ secrets.GCP_CREDENTIAL }}
   
-      - name: 'Set up GCP SDK'
-        uses: google-github-actions/setup-gcloud@v2
+      # - name: 'Set up GCP SDK'
+      #   uses: google-github-actions/setup-gcloud@v2
         
-      - name: 'Set up and use GCP CLI'
-        run: 'gcloud info'
+      # - name: 'Set up and use GCP CLI'
+      #   run: 'gcloud info'
 
       # - name: Create /tmp/webapp Directory
       #   run: mkdir -p /tmp/webapp
@@ -58,9 +59,10 @@ jobs:
           DB_Name: ${{ vars.DB_NAME }}
           Port: ${{ vars.PORT }}
           Host: ${{ vars.HOST }}
-          google_project_id: ${{ vars.GCP_PROJECT_ID }}
-          google_demo_project_id: ${{ vars.DEMO_GCP_PROJECT_ID }} 
-    
+          # google_project_id: ${{ vars.GCP_PROJECT_ID }}
+          # google_demo_project_id: ${{ vars.DEMO_GCP_PROJECT_ID }} 
+          # below command will go in run
+          # -var "gcp_project_id=${{ env.google_project_id }}" \
 
         run: |
           export PACKER_LOG=1
@@ -75,28 +77,27 @@ jobs:
             -var "mysql_host=${{ env.Host }}" \
             -var "db_name=${{ env.DB_Name }}" \
             -var "app_port=${{ env.Port }}" \
-            -var "gcp_project_id=${{ env.google_project_id }}" \
             ./packer/aws-ubuntu.pkr.hcl
         
-      - name: Get Latest Image Name
-        id: get-image
-        run: |
-          IMAGE_NAME=$(gcloud compute images list \
-            --project=${{ vars.GCP_PROJECT_ID }} \
-            --sort-by=~creationTimestamp \
-            --limit=1 \
-            --format="value(NAME)")
-          echo "Latest image found: $IMAGE_NAME"
-          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+      # - name: Get Latest Image Name
+      #   id: get-image
+      #   run: |
+      #     IMAGE_NAME=$(gcloud compute images list \
+      #       --project=${{ vars.GCP_PROJECT_ID }} \
+      #       --sort-by=~creationTimestamp \
+      #       --limit=1 \
+      #       --format="value(NAME)")
+      #     echo "Latest image found: $IMAGE_NAME"
+      #     echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
-      - name: Copy GCP Image to Another Project
-        env:
-          SOURCE_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
-          DESTINATION_PROJECT_ID: ${{ vars.DEMO_GCP_PROJECT_ID }}
-        run: |
-          echo "Copying image from $SOURCE_PROJECT_ID to $DESTINATION_PROJECT_ID..."
-          gcloud compute images create "webapp-$(date +%s)" \
-            --source-image="$IMAGE_NAME" \
-            --source-image-project="$SOURCE_PROJECT_ID" \
-            --project="$DESTINATION_PROJECT_ID" \
-            --description="Copied from $SOURCE_PROJECT_ID on $(date)"
+      # - name: Copy GCP Image to Another Project
+      #   env:
+      #     SOURCE_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      #     DESTINATION_PROJECT_ID: ${{ vars.DEMO_GCP_PROJECT_ID }}
+      #   run: |
+      #     echo "Copying image from $SOURCE_PROJECT_ID to $DESTINATION_PROJECT_ID..."
+      #     gcloud compute images create "webapp-$(date +%s)" \
+      #       --source-image="$IMAGE_NAME" \
+      #       --source-image-project="$SOURCE_PROJECT_ID" \
+      #       --project="$DESTINATION_PROJECT_ID" \
+      #       --description="Copied from $SOURCE_PROJECT_ID on $(date)"
