@@ -99,7 +99,7 @@ variable "demo_account_id" {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "${clean_resource_name(var.ami_name1)}-${clean_resource_name(timestamp())}"
+  ami_name      = "${var.ami_name1}-${replace(timestamp(), ":", "-")}"
   instance_type = var.instance_type1
   source_ami    = var.ubuntu_ami_image1
   region        = var.aws_region1
