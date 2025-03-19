@@ -151,12 +151,12 @@ build {
       # Update & upgrade system
       "echo 'Updating system packages...'",
       "sudo mkdir -p /tmp/webapp",
-      "sudo chmod 777 /tmp/webapp"
+      "sudo chmod 755 /tmp/webapp"
     ]
   }
 
   provisioner "file" {
-    source      = "../webapp"
+    source      = "../webapp/"
     destination = "/tmp/webapp/"
   }
 
