@@ -151,7 +151,7 @@ build {
       # Update & upgrade system
       "echo 'Updating system packages...'",
       "sudo mkdir -p /tmp/webapp",
-      "sudo chmod 755 /tmp/webapp"
+      "sudo chmod 777 /tmp/webapp"
     ]
   }
 
