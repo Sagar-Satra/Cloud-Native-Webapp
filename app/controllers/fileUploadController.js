@@ -1,14 +1,16 @@
-// app/controllers/fileUploadController.js
 import { uploadFileToS3, getFileMetadataById, deleteFileById } from '../services/fileService.js';
+import { setNoCacheHeaders } from "../utils/headers.js";
 
 // Method not allowed handler
 export const methodsNotAllowed = (req, res) => {
-  res.status(405).json({ error: 'Method Not Allowed' });
+    setNoCacheHeaders(res);
+    res.status(405).json({ error: 'Method Not Allowed' });
 };
 
 // Upload a file
 export const uploadFile = async (req, res) => {
   try {
+    setNoCacheHeaders(res);
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
@@ -36,6 +38,7 @@ export const uploadFile = async (req, res) => {
 // Get file metadata by ID
 export const getFileById = async (req, res) => {
   try {
+    setNoCacheHeaders(res);
     const fileId = req.params.id;
     
     // Call service function to get file metadata
@@ -61,6 +64,7 @@ export const getFileById = async (req, res) => {
 // Delete file
 export const deleteFile = async (req, res) => {
   try {
+    setNoCacheHeaders(res);
     const fileId = req.params.id;
     
     // Call service function to delete file

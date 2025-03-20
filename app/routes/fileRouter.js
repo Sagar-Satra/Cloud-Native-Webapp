@@ -20,4 +20,5 @@ fileRouter.route('/file')
 fileRouter.route('/file/:id')
     .get(getFileById)
     .delete(deleteFile)
+    .head(methodsNotAllowed)
     .all(methodsNotAllowed);

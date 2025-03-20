@@ -12,22 +12,25 @@ export const uploadFileToS3 = async (fileBuffer, fileName, mimeType, fileSize) =
     // Generate a unique ID for the file
     const fileId = uuidv4();
     
+    const s3Key = `${fileId}-${fileName}`;
+
     // Upload to S3
     const params = {
       Bucket: bucketName,
-      Key: `${fileId}-${fileName}`,
+      Key: s3Key,
       Body: fileBuffer,
       ContentType: mimeType
     };
 
     const uploadResult = await s3.upload(params).promise();
     
-    const concat_url = `${bucketName}/${fileId}/${fileName}`;
+    const formattedUrl = `${bucketName}/${fileId}/${fileName}`;
     // Save metadata to database
     const file = await fileModel.create({
       id: fileId,
       file_name: fileName,
-      url: concat_url,
+      url: formattedUrl,      
+    //   s3_key: s3Key,          // Actual S3 key for operations
       upload_date: new Date().toISOString().split('T')[0],
       file_size: fileSize,
       mime_type: mimeType
@@ -67,10 +70,13 @@ export const deleteFileById = async (fileId) => {
       throw new Error('File not found');
     }
     
+    // Use the actual S3 key if available, otherwise try to derive it
+    let key = `${fileId}-${file.file_name}`;
+
     // Delete from S3
     const params = {
       Bucket: bucketName,
-      Key: file.url
+      Key: key
     };
     
     await s3.deleteObject(params).promise();
