@@ -22,11 +22,12 @@ export const uploadFileToS3 = async (fileBuffer, fileName, mimeType, fileSize) =
 
     const uploadResult = await s3.upload(params).promise();
     
+    const concat_url = `${bucketName}/${fileId}/${fileName}`;
     // Save metadata to database
     const file = await fileModel.create({
       id: fileId,
       file_name: fileName,
-      url: uploadResult.Key,
+      url: concat_url,
       upload_date: new Date().toISOString().split('T')[0],
       file_size: fileSize,
       mime_type: mimeType
