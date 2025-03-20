@@ -6,7 +6,7 @@ import initRoutes from '../app/routes/index.js';
 const initApp = (app) => {
     app.use(cors());    
     app.use(helmet());          
-    app.use(express.json());         
+    app.use(express.json());       
     initRoutes(app);                   
 }
 

@@ -16,6 +16,7 @@ app.listen(port , async () => {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
         await healthCheckModel.sync();
+        await fileModel.sync();
       } catch (error) {
         console.error('Unable to connect to the database:', error);
       }
