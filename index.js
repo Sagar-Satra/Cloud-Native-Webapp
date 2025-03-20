@@ -4,6 +4,7 @@ import sequelize from './app/database/db.js';
 
 import initApp from './app/app.js';
 import { healthCheckModel } from './app/database/schema/healthCheckModel.js';
+import { fileModel } from './app/database/schema/fileModel.js';
 
 dotenv.config();
 export const app = express();
