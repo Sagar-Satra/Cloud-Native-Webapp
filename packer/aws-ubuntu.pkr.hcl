@@ -172,6 +172,61 @@ build {
     ]
   }
 
+  # installing Cloudwatch agent
+  provisioner "shell" {
+  inline = [
+      # Install CloudWatch Agent
+      "echo 'Installing AWS CloudWatch Agent...'",
+      "sudo apt-get install -y wget",
+      "wget https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb",
+      "sudo dpkg -i amazon-cloudwatch-agent.deb",
+      "sudo systemctl enable amazon-cloudwatch-agent"
+    ]
+  }
+
+  # creating the CloudWatch config file
+  provisioner "file" {
+      content = <<EOF
+    {
+      "agent": {
+        "metrics_collection_interval": 10,
+        "logfile": "/var/logs/amazon-cloudwatch-agent.log"
+      },
+      "logs": {
+        "logs_collected": {
+          "files": {
+            "collect_list": [
+              {
+                "file_path": "/var/log/webapp/application.log",
+                "log_group_name": "csye6225",
+                "log_stream_name": "webapp"
+              }
+            ]
+          }
+        }
+      },
+      "metrics": {
+        "metrics_collected": {
+          "statsd": {
+            "service_address": ":8125",
+            "metrics_collection_interval": 15,
+            "metrics_aggregation_interval": 300
+          }
+        }
+      }
+    }
+    EOF
+      destination = "/tmp/cloudwatch-config.json"
+  }
+
+  provisioner "shell" {
+  inline = [
+      # Move CloudWatch config to final location
+      "sudo mv /tmp/cloudwatch-config.json /opt/cloudwatch-config.json",
+      "sudo chmod 644 /opt/cloudwatch-config.json"
+    ]
+  }
+
   # provisioner "shell" {
   #   inline = [
   #     # Alter MySQL root password and create database if not exists
@@ -206,6 +261,16 @@ build {
       "echo 'Setting ownership and permissions for application files...'",
       "sudo chown -R csye6225:csye6225 /opt/csye6225/webapp",
       "sudo chmod -R 755 /opt/csye6225/webapp",
+    ]
+  }
+
+  # Create log directory with permissions
+  provisioner "shell" {
+  inline = [
+      # Create log directory with proper permissions
+      "sudo mkdir -p /var/log/webapp",
+      "sudo chown csye6225:csye6225 /var/log/webapp",
+      "sudo chmod 755 /var/log/webapp"
     ]
   }
 

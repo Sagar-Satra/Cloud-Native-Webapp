@@ -70,4 +70,54 @@
   - sudo kill -9 (1234) change the number
   - then node index.js
  
-  - new comment
+
+## Git and Github commands
+To delete local machine branches
+git branch -D <branch-name>
+
+## Whole flow of steps in the GitHub
+1. Create Org
+2. Under Org Setting (Member privileges) allow forking private repo
+3. Create Repo
+4. Fork Repo into your namespace
+5. Clone that repo to your local git clone
+6. commands to use 
+- git status
+- git clone {fork}
+- git remote -v {to check remotes}
+- git remote rename origin nitesh {fork repo}
+- git remote add upstream url
+- git checkout -b feature/branch
+- git add .
+- git commit -m "message"
+- git push {fork}
+- <PR -> upstream Merge Rebase >
+- git checkout main
+- git pull upstream main
+- git push {fork} main
+
+## Steps for connecting to the MYSQL RDS database from EC2
+
+sudo apt update
+sudo apt install mysql-client-core-8.0
+
+mysql -h csye6225.catg4u6cs0ij.us-east-1.rds.amazonaws.com -u csye6225 -p
+enter the password set in terraform
+
+SHOW DATABASES;
+USE csye6225;
+
+SHOW TABLES;
+SELECT * FROM health_checks;
+
+
+## To check if MySQL is installed or not in EC2
+
+dpkg -l | grep mysql
+or
+rpm -qa | grep MySQL
+
+
+systemctl status mysql
+or
+service mysql status
