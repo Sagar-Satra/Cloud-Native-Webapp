@@ -174,7 +174,7 @@ build {
 
   # installing Cloudwatch agent
   provisioner "shell" {
-  inline = [
+    inline = [
       # Install CloudWatch Agent
       "echo 'Installing AWS CloudWatch Agent...'",
       "sudo apt-get install -y wget",
@@ -186,7 +186,7 @@ build {
 
   # creating the CloudWatch config file
   provisioner "file" {
-      content = <<EOF
+    content     = <<EOF
     {
       "agent": {
         "metrics_collection_interval": 10,
@@ -216,11 +216,11 @@ build {
       }
     }
     EOF
-      destination = "/tmp/cloudwatch-config.json"
+    destination = "/tmp/cloudwatch-config.json"
   }
 
   provisioner "shell" {
-  inline = [
+    inline = [
       # Move CloudWatch config to final location
       "sudo mv /tmp/cloudwatch-config.json /opt/cloudwatch-config.json",
       "sudo chmod 644 /opt/cloudwatch-config.json"
@@ -266,7 +266,7 @@ build {
 
   # Create log directory with permissions
   provisioner "shell" {
-  inline = [
+    inline = [
       # Create log directory with proper permissions
       "sudo mkdir -p /var/log/webapp",
       "sudo chown csye6225:csye6225 /var/log/webapp",
