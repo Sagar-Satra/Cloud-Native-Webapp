@@ -16,7 +16,7 @@ export const uploadFileToS3 = async (fileBuffer, fileName, mimeType, fileSize) =
     const fileId = uuidv4();
     const s3Key = `${fileId}-${fileName}`;
 
-    logger.info('Starting S3 upload', {
+    logger.info('Starting S3 upload from service', {
       fileName,
       fileSize,
       mimeType,
@@ -35,7 +35,7 @@ export const uploadFileToS3 = async (fileBuffer, fileName, mimeType, fileSize) =
       return s3.upload(params).promise();
     });
     
-    logger.info('S3 upload completed successfully', {
+    logger.info('S3 upload completed successfully from service', {
       fileName,
       fileId,
       s3Location: uploadResult.Location
@@ -63,7 +63,7 @@ export const uploadFileToS3 = async (fileBuffer, fileName, mimeType, fileSize) =
     
     return file;
   } catch (error) {
-    logger.error('Error in uploadFileToS3 service', {
+    logger.error('Error in uploadFileToS3 in service', {
       error: error.message,
       stack: error.stack,
       fileName
@@ -75,7 +75,7 @@ export const uploadFileToS3 = async (fileBuffer, fileName, mimeType, fileSize) =
 // Get file metadata by ID
 export const getFileMetadataById = async (fileId) => {
   try {
-    logger.info('Fetching file metadata', { fileId });
+    logger.info('Fetching file metadata from service', { fileId });
     
     // Get file data with metrics timing
     const file = await timeDbOperation('findByPk', 'getFileMetadata', async () => {
@@ -87,7 +87,7 @@ export const getFileMetadataById = async (fileId) => {
       throw new Error('File not found');
     }
     
-    logger.info('File metadata retrieved successfully', { fileId });
+    logger.info('File metadata retrieved successfully from database', { fileId });
     
     return file;
   } catch (error) {
@@ -106,7 +106,7 @@ export const deleteFileById = async (fileId) => {
     const s3 = new AWS.S3();
     const bucketName = process.env.S3_BUCKET;
     
-    logger.info('Starting file deletion process', { fileId });
+    logger.info('Starting file deletion process from service', { fileId });
     
     // Get file details from database with metrics timing
     const file = await timeDbOperation('findByPk', 'deleteFileMetadata', async () => {
@@ -114,14 +114,14 @@ export const deleteFileById = async (fileId) => {
     });
     
     if (!file) {
-      logger.warn('File not found for deletion', { fileId });
+      logger.warn('File not found in the database for deletion', { fileId });
       throw new Error('File not found');
     }
     
     // Use the actual S3 key if available, otherwise try to derive it
     let key = `${fileId}-${file.file_name}`;
 
-    logger.info('Deleting file from S3', {
+    logger.info('Deleting object from S3 in service', {
       fileId,
       fileName: file.file_name,
       s3Key: key
@@ -144,7 +144,7 @@ export const deleteFileById = async (fileId) => {
       return file.destroy();
     });
     
-    logger.info('File deletion completed successfully', { fileId });
+    logger.info('File deletion completed successfully from S3 and RDS', { fileId });
     
     return true;
   } catch (error) {

@@ -1,7 +1,7 @@
-import winston from 'winston'; // importing winston for logging
-import { v4 as uuidv4 } from 'uuid'; // importing uuid for generating unique request IDs
-import fs from 'fs'; // importing fs for file system operations
-import path from 'path'; // importing path for handling file paths
+import winston from 'winston';
+import { v4 as uuidv4 } from 'uuid'; 
+import fs from 'fs'; 
+import path from 'path'; 
 
 const LOG_DIR = process.env.LOG_DIR || '/var/log/webapp';
 
@@ -12,17 +12,16 @@ try {
   }
 } catch (error) {
   console.warn(`Warning: Could not create log directory: ${error.message}`);
-  // Continue execution - we'll handle this below
 }
 
-// Set up transports array - always include console
+// Set up transports array for winston logger
 const transports = [
   new winston.transports.Console({
     format: winston.format.simple()
   })
 ];
 
-// Only add file transport if we can write to the directory
+// Only add file transport if write to directory
 try {
   // Create a proper log file path
   const logFilePath = path.join(LOG_DIR, 'application.log');
@@ -35,7 +34,6 @@ try {
   );
 } catch (error) {
   console.warn(`Warning: File logging disabled: ${error.message}`);
-  // Continue with console-only logging
 }
 
 // creating the logger instance

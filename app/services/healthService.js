@@ -10,7 +10,7 @@ export const createHealthCheckService = async () => {
     return await timeDbOperation('create', 'healthCheck', async () => {
         const record = await healthCheckModel.create({});
         
-        logger.info('Health check record created successfully', {
+        logger.info('Health check record created successfully - status check from service', {
             checkId: record.check_id,
             datetime: record.datetime
         });

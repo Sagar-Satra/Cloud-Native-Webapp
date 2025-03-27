@@ -24,7 +24,7 @@ export const authenticate = async () => {
       return await sequelize.authenticate();
     });
     console.log('Connection has been established successfully.');
-    logger.info('Database connection established successfully - db.js');
+    logger.info('Database connection established successfully from db.js');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
     logger.error('Unable to connect to the database - db.js', {

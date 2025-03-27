@@ -4,7 +4,7 @@ import { logger } from '../utils/logging.js';
 
 export const getHealthController = async (req, res) => {
     try {
-        logger.info('Health check requested', {
+        logger.info('Health check request received in controller', {
             requestId: req.requestId,
             query: req.query,
             hasBody: req.body && Object.keys(req.body).length > 0
@@ -24,12 +24,12 @@ export const getHealthController = async (req, res) => {
             return res.status(400).send();
         }
         await createHealthCheckService();
-        logger.info('Health check successful', {
+        logger.info('Health check successful - status check from controller', {
             requestId: req.requestId
         });
         return res.status(200).send();
     } catch (error) {
-        logger.error('Health check failed', {
+        logger.error('Health check failed - status check from controller', {
             requestId: req.requestId,
             error: error.message,
             stack: error.stack
@@ -40,7 +40,7 @@ export const getHealthController = async (req, res) => {
 
 export const methodsNotAllowed = (req, res) => {
     try{
-        logger.warn('Method not allowed for health check', {
+        logger.warn('Method-not-allowed for health check', {
             requestId: req.requestId,
             method: req.method,
             path: req.path
@@ -48,7 +48,7 @@ export const methodsNotAllowed = (req, res) => {
         setNoCacheHeaders(res);
         return res.status(405).send();
     } catch (error) {
-        logger.error('Error in methods not allowed handler', {
+        logger.error('Error in methods-not-allowed handler', {
             requestId: req.requestId,
             error: error.message,
             stack: error.stack

@@ -43,7 +43,7 @@ const timeDbOperation = async (operation, queryName, func) => {
         const duration = Date.now() - startTime;
         client.timing(`database.${operation}.${queryName}.error.time`, duration);
         
-        // Re-throw the error for proper error handling
+        // Re-throw the error
         throw error;
     }
 };
@@ -66,7 +66,7 @@ const timeS3Operation = async (operation, func) => {
         const duration = Date.now() - startTime;
         client.timing(`s3.${operation}.error.time`, duration);
         
-        // Re-throw the error for proper error handling
+        // Re-throw the error
         throw error;
     }
 };
