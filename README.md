@@ -121,3 +121,6 @@ rpm -qa | grep MySQL
 systemctl status mysql
 or
 service mysql status
+
+
+implemented LB, Autoscaling groups for the instances.
