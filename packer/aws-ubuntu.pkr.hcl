@@ -173,15 +173,15 @@ build {
   }
 
   provisioner "shell" {
-  inline = [
-    # Install AWS CLI and jq for Secrets Manager access
-    "echo 'Installing AWS CLI, jq, and other required tools...'",
-    "sudo apt-get install -y awscli jq",
-    
-    # Install dependencies for KMS encryption
-    "sudo apt-get install -y cryptsetup",
-  ]
-}
+    inline = [
+      # Install AWS CLI and jq for Secrets Manager access
+      "echo 'Installing AWS CLI, jq, and other required tools...'",
+      "sudo apt-get install -y awscli jq",
+
+      # Install dependencies for KMS encryption
+      "sudo apt-get install -y cryptsetup",
+    ]
+  }
 
   # installing Cloudwatch agent
   provisioner "shell" {
