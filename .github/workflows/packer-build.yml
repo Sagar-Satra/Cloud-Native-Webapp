@@ -205,7 +205,7 @@ jobs:
           echo "Starting instance refresh..."
           REFRESH_ID=$(aws autoscaling start-instance-refresh \
             --auto-scaling-group-name app-autoscaling-group \
-            --preferences '{"MinHealthyPercentage": 70, "InstanceWarmup": 300}' \
+            --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 300}' \
             --query 'InstanceRefreshId' --output text)
           
           # Validate we got a refresh ID
