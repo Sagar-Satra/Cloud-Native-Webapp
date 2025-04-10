@@ -106,8 +106,8 @@ source "amazon-ebs" "ubuntu" {
   ssh_username  = var.ssh_username1
 
   aws_polling {
-    delay_seconds = 15
-    max_attempts  = 40
+    delay_seconds = 10
+    max_attempts  = 30
   }
   ssh_timeout = "10m"
 
