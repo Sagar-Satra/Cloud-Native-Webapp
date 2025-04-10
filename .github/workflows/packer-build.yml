@@ -1,7 +1,7 @@
 name: Packer Build and instance refresh
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
@@ -108,11 +108,13 @@ jobs:
           LAUNCH_TEMPLATE_ID=$(aws ec2 describe-launch-templates --query 'LaunchTemplates[?LaunchTemplateName==`csye6225_asg`].LaunchTemplateId' --output text)
           echo "Launch Template ID: $LAUNCH_TEMPLATE_ID"
           
+          INSTANCE_TYPE=$(aws ec2 describe-launch-template-versions --launch-template-id $LAUNCH_TEMPLATE_ID --versions '$Latest' --query 'LaunchTemplateVersions[0].LaunchTemplateData.InstanceType' --output text)
+
           aws ec2 create-launch-template-version \
             --launch-template-id $LAUNCH_TEMPLATE_ID \
             --version-description "Auto-updated AMI via GitHub Actions" \
             --source-version "$Latest" \
-            --launch-template-data "{\"ImageId\":\"${{ env.AMI_ID }}\"}"
+            --launch-template-data "{\"ImageId\":\"${{ env.AMI_ID }}\",\"InstanceType\":\"$INSTANCE_TYPE\"}"
             
           # Set the newest version as default
           LATEST_VERSION=$(aws ec2 describe-launch-template-versions --launch-template-id $LAUNCH_TEMPLATE_ID --query 'LaunchTemplateVersions[0].VersionNumber' --output text)
