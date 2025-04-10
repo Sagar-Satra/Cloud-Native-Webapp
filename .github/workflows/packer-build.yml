@@ -207,25 +207,21 @@ jobs:
             --auto-scaling-group-name app-autoscaling-group \
             --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 300}' \
             --query 'InstanceRefreshId' --output text)
-          
-          # Validate we got a refresh ID
+
           if [ -z "$REFRESH_ID" ]; then
             echo "ERROR: Failed to start instance refresh"
             exit 1
           fi
-            
+
           echo "REFRESH_ID=$REFRESH_ID" >> $GITHUB_ENV
           echo "Instance refresh started with ID: $REFRESH_ID"
-        
-      # Wait for instance refresh to complete
+
+        # Wait for instance refresh to complete (infinite loop)
       - name: Wait for Instance Refresh to Complete
         run: |
           echo "Waiting for instance refresh to complete..."
-          
-          RETRY_COUNT=0
-          MAX_RETRIES=30
-          
-          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+
+          while true; do
             STATUS=$(aws autoscaling describe-instance-refreshes \
               --auto-scaling-group-name app-autoscaling-group \
               --instance-refresh-ids ${{ env.REFRESH_ID }} \
@@ -235,9 +231,9 @@ jobs:
               --auto-scaling-group-name app-autoscaling-group \
               --instance-refresh-ids ${{ env.REFRESH_ID }} \
               --query 'InstanceRefreshes[0].PercentageComplete' --output text)
-              
+
             echo "Status: $STATUS, Percentage complete: $PERCENTAGE%"
-            
+
             if [ "$STATUS" = "Successful" ]; then
               echo "Instance refresh completed successfully"
               break
@@ -245,47 +241,36 @@ jobs:
               echo "ERROR: Instance refresh failed or was cancelled"
               exit 1
             fi
-            
-            if [ $RETRY_COUNT -eq $((MAX_RETRIES-1)) ]; then
-              echo "ERROR: Timed out waiting for instance refresh to complete"
-              exit 1
-            fi
-            
+
             echo "Sleeping for 30 seconds..."
             sleep 30
-            RETRY_COUNT=$((RETRY_COUNT+1))
           done
-      
-      # Verify application is accessible
+
+        # Verify application is accessible (infinite loop)
       - name: Verify Application Health After Refresh
         run: |
           echo "Verifying application health after instance refresh..."
-          
-          # Get the load balancer DNS name
+
           LB_DNS=$(aws elbv2 describe-load-balancers \
             --names webapp-load-balancer \
             --query 'LoadBalancers[0].DNSName' \
             --output text)
-          
+
           if [ -z "$LB_DNS" ]; then
             echo "WARNING: Could not find load balancer DNS name. Skipping health check."
             exit 0
           fi
-          
+
           echo "Testing application health at http://$LB_DNS/healthz"
-          
-          RETRY_COUNT=0
-          MAX_RETRIES=30
-          
-          until curl -s -o /dev/null -w "%{http_code}" "http://$LB_DNS/healthz" | grep -q "200" || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
-            echo "Application not yet healthy, waiting... (Attempt $RETRY_COUNT of $MAX_RETRIES)"
+
+          while true; do
+            STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "http://$LB_DNS/healthz")
+
+            if [ "$STATUS_CODE" = "200" ]; then
+              echo "Application is healthy and accessible"
+              break
+            fi
+
+            echo "Application not yet healthy (status $STATUS_CODE), waiting..."
             sleep 30
-            RETRY_COUNT=$((RETRY_COUNT+1))
           done
-          
-          if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-            echo "WARNING: Application did not become healthy after refresh"
-            exit 0  # Don't fail the workflow, but provide warning
-          else
-            echo "Application is healthy and accessible"
-          fi
