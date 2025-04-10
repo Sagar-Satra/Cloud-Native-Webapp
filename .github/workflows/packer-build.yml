@@ -1,4 +1,4 @@
-name: Packer Build
+name: Packer Build and instance refresh
 
 on:
   push:
@@ -16,7 +16,8 @@ jobs:
       - name: Set up Packer
         uses: hashicorp/setup-packer@v2
 
-      - name: Set up AWS CLI
+      # setting the AWS credentials for dev service account 
+      - name: Set up AWS CLI for service account in Dev env
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.SERVICE_AWS_ACCESS_KEY_ID }}
@@ -64,4 +65,98 @@ jobs:
             -var "ubuntu_ami_image1=${{ env.Ubuntu_AMI_Image }}" \
             -var "ssh_username1=${{ env.SSH_User_Name }}" \
             ./packer/aws-ubuntu.pkr.hcl
+      
+      - name: Get latest AMI ID
+        id: get_ami_id
+        run: |
+          AMI_ID=$(aws ec2 describe-images --owners self --query 'Images[*].[ImageId,CreationDate]' --output text | sort -k2 -r | head -n1 | cut -f1)
+          echo "AMI_ID=$AMI_ID" >> $GITHUB_ENV
+          echo "Latest AMI ID: $AMI_ID"
         
+      - name: Sharing the AMI with DEMO account
+        run: |
+          aws ec2 modify-image-attribute \
+            --image-id ${{ env.AMI_ID }} \
+            --launch-permission "Add=[{UserId=${{ secrets.DEMO_AWS_ACCOUNT_ID }}}]"
+          echo "AMI shared with demo account"
+      
+      # switching to demo account
+      - name: Configuring AWS credentials for service account in demo env
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.DEMO_SERVICE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEMO_SERVICE_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # waiting for AMI to be available in demo account
+      - name: Wait for AMI to be available in demo account
+        run: |
+          echo "Waiting for AMI to be available in DEMO account..."
+          while true; do
+            AMI_STATE=$(aws ec2 describe-images --image-ids ${{ env.AMI_ID }} --query 'Images[0].State' --output text 2>/dev/null || echo "pending")
+            if [ "$AMI_STATE" = "available" ]; then
+              echo "AMI is now available in DEMO account"
+              break
+            fi
+            echo "AMI not yet available. Waiting 10 seconds..."
+            sleep 10
+          done
+      
+      # Update Launch Template with new AMI ID
+      - name: Update Launch Template
+        run: |
+          LAUNCH_TEMPLATE_ID=$(aws ec2 describe-launch-templates --query 'LaunchTemplates[?LaunchTemplateName==`csye6225_asg`].LaunchTemplateId' --output text)
+          echo "Launch Template ID: $LAUNCH_TEMPLATE_ID"
+          
+          aws ec2 create-launch-template-version \
+            --launch-template-id $LAUNCH_TEMPLATE_ID \
+            --version-description "Auto-updated AMI via GitHub Actions" \
+            --source-version "$Latest" \
+            --launch-template-data "{\"ImageId\":\"${{ env.AMI_ID }}\"}"
+            
+          # Set the newest version as default
+          LATEST_VERSION=$(aws ec2 describe-launch-template-versions --launch-template-id $LAUNCH_TEMPLATE_ID --query 'LaunchTemplateVersions[0].VersionNumber' --output text)
+          aws ec2 modify-launch-template --launch-template-id $LAUNCH_TEMPLATE_ID --default-version $LATEST_VERSION
+          
+          echo "Launch Template updated with new AMI ID"
+          
+      # Start instance refresh in Auto Scaling Group
+      - name: Start Instance Refresh
+        id: start-refresh
+        run: |
+          REFRESH_ID=$(aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name app-autoscaling-group \
+            --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 300}' \
+            --query 'InstanceRefreshId' --output text)
+            
+          echo "REFRESH_ID=$REFRESH_ID" >> $GITHUB_ENV
+          echo "Instance refresh started with ID: $REFRESH_ID"
+        
+       # Wait for instance refresh to complete
+      - name: Wait for Instance Refresh to Complete
+        run: |
+         echo "Waiting for instance refresh to complete..."
+         while true; do
+           STATUS=$(aws autoscaling describe-instance-refreshes \
+             --auto-scaling-group-name app-autoscaling-group \
+             --instance-refresh-ids ${{ env.REFRESH_ID }} \
+             --query 'InstanceRefreshes[0].Status' --output text)
+             
+           PERCENTAGE=$(aws autoscaling describe-instance-refreshes \
+             --auto-scaling-group-name app-autoscaling-group \
+             --instance-refresh-ids ${{ env.REFRESH_ID }} \
+             --query 'InstanceRefreshes[0].PercentageComplete' --output text)
+             
+           echo "Status: $STATUS, Percentage complete: $PERCENTAGE%"
+           
+           if [ "$STATUS" = "Successful" ]; then
+             echo "Instance refresh completed successfully"
+             break
+           elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "Cancelled" ]; then
+             echo "Instance refresh failed or was cancelled"
+             exit 1
+           fi
+           
+           echo "Sleeping for 30 seconds..."
+           sleep 30
+         done
