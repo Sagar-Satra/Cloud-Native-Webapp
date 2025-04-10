@@ -134,7 +134,7 @@ jobs:
             fi
             
             echo "AMI not yet available. Waiting 10 seconds..."
-            sleep 10
+            sleep 15
             RETRY_COUNT=$((RETRY_COUNT+1))
           done
       
@@ -223,7 +223,7 @@ jobs:
           echo "Waiting for instance refresh to complete..."
           
           RETRY_COUNT=0
-          MAX_RETRIES=15
+          MAX_RETRIES=30
           
           while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             STATUS=$(aws autoscaling describe-instance-refreshes \
@@ -252,7 +252,7 @@ jobs:
             fi
             
             echo "Sleeping for 10 seconds..."
-            sleep 10
+            sleep 15
             RETRY_COUNT=$((RETRY_COUNT+1))
           done
       
@@ -275,11 +275,11 @@ jobs:
           echo "Testing application health at http://$LB_DNS/healthz"
           
           RETRY_COUNT=0
-          MAX_RETRIES=10
+          MAX_RETRIES=20
           
           until curl -s -o /dev/null -w "%{http_code}" "http://$LB_DNS/healthz" | grep -q "200" || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
             echo "Application not yet healthy, waiting... (Attempt $RETRY_COUNT of $MAX_RETRIES)"
-            sleep 10
+            sleep 15
             RETRY_COUNT=$((RETRY_COUNT+1))
           done
           
