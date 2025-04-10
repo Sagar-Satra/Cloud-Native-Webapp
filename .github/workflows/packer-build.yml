@@ -164,13 +164,27 @@ jobs:
               exit 1
             }
           
-          # Create new template version
+          # Get the full template data and modify only the AMI ID
+          echo "Getting current template data..."
+          TEMPLATE_DATA=$(aws ec2 describe-launch-template-versions \
+            --launch-template-id $LAUNCH_TEMPLATE_ID \
+            --versions '$Latest' \
+            --query 'LaunchTemplateVersions[0].LaunchTemplateData' \
+            --output json)
+          
+          # Install jq if needed
+          sudo apt-get update && sudo apt-get install -y jq
+          
+          # Update only the AMI ID
+          echo "Updating AMI ID in template data..."
+          MODIFIED_DATA=$(echo $TEMPLATE_DATA | jq --arg ami "${{ env.AMI_ID }}" '.ImageId = $ami')
+          
+          # Create new version with all data preserved
           echo "Creating new launch template version with AMI ID: ${{ env.AMI_ID }}"
           aws ec2 create-launch-template-version \
             --launch-template-id $LAUNCH_TEMPLATE_ID \
             --version-description "Auto-updated AMI via GitHub Actions" \
-            --source-version "$Latest" \
-            --launch-template-data "{\"ImageId\":\"${{ env.AMI_ID }}\"}"
+            --launch-template-data "$MODIFIED_DATA"
             
           # Set the newest version as default
           echo "Setting newest version as default..."
