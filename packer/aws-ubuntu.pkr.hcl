@@ -174,12 +174,17 @@ build {
 
   provisioner "shell" {
     inline = [
-      # Install AWS CLI and jq for Secrets Manager access
+      # Install AWS CLI v2
       "echo 'Installing AWS CLI, jq, and other required tools...'",
-      "sudo apt-get install -y awscli jq",
+      "sudo apt-get update",
+      "sudo apt-get install -y jq unzip",
+      "curl 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o 'awscliv2.zip'",
+      "unzip awscliv2.zip",
+      "sudo ./aws/install",
+      "rm -rf aws awscliv2.zip",
 
       # Install dependencies for KMS encryption
-      "sudo apt-get install -y cryptsetup",
+      "sudo apt-get install -y cryptsetup"
     ]
   }
 
