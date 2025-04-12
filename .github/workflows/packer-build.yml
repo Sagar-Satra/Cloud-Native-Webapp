@@ -245,32 +245,3 @@ jobs:
             echo "Sleeping for 30 seconds..."
             sleep 30
           done
-
-        # Verify application is accessible (infinite loop)
-      - name: Verify Application Health After Refresh
-        run: |
-          echo "Verifying application health after instance refresh..."
-
-          LB_DNS=$(aws elbv2 describe-load-balancers \
-            --names webapp-load-balancer \
-            --query 'LoadBalancers[0].DNSName' \
-            --output text)
-
-          if [ -z "$LB_DNS" ]; then
-            echo "WARNING: Could not find load balancer DNS name. Skipping health check."
-            exit 0
-          fi
-
-          echo "Testing application health at http://$LB_DNS/healthz"
-
-          while true; do
-            STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "http://$LB_DNS/healthz")
-
-            if [ "$STATUS_CODE" = "200" ]; then
-              echo "Application is healthy and accessible"
-              break
-            fi
-
-            echo "Application not yet healthy (status $STATUS_CODE), waiting..."
-            sleep 30
-          done
