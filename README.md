@@ -11,7 +11,7 @@
 
 ## Build and Deploy Instructions
 1. Clone the Git repository: 
-   using: git clone git@github.com:CSYE6225-Spring2025-SagarSatra/webapp.git
+   using: git clone 
 
 2. Navigate to that cloned directory in the local folder.
    using: cd repository-directory
@@ -44,11 +44,11 @@
 8.  Setup for running the script
    - Download the zip from canvas and place it into a folder and open the cmd and navigate into that directory
    - Deploy the droplet and copy the IP address
-   - Establish the connection using SSH command: ssh -i C:\Users\sagar\.ssh\do root@IPADDRESS
-   - scp the zip file into the  "/tmp/ directory" using command : scp -i C:\Users\sagar\.ssh\do webapp.zip root@137.184.63.120:/tmp/
+   - Establish the connection using SSH command: ssh -i C:\Users\{name}\.ssh\do root@IPADDRESS
+   - scp the zip file into the  "/tmp/ directory" using command : scp -i C:\Users\{name}\.ssh\do webapp.zip root@IP:/tmp/
    - copy the .env and shellscript file into the same folder
-   - scp -i C:\Users\sagar\.ssh\do setupapp.sh root@137.184.63.120:/tmp/
-   - scp -i C:\Users\sagar\.ssh\do .env root@137.184.63.120:/tmp/
+   - scp -i C:\Users\{name}\.ssh\do setupapp.sh root@IP:/tmp/
+   - scp -i C:\Users\{name}\.ssh\do .env root@IP:/tmp/
    - Unzip the application file into the /tmp/ directory using command: sudo unzip -o /tmp/webapp.zip -d /tmp/
    - chmod +x setupapp.sh
    - ./setupapp.sh
@@ -59,12 +59,12 @@
 - 9.  If permission denied:
       - mysql -u root -p;
       - SELECT user, host, authentication_string FROM mysql.user;
-      - DROP USER IF EXISTS 'sagar'@'localhost';
-      - CREATE USER 'sagar'@'localhost' IDENTIFIED BY 'sagar123';
-      - GRANT ALL PRIVILEGES ON cloud_native.* TO 'sagar'@'localhost';
+      - DROP USER IF EXISTS '{name}'@'localhost';
+      - CREATE USER '{name}'@'localhost' IDENTIFIED BY '{name}123';
+      - GRANT ALL PRIVILEGES ON cloud_native.* TO '{name}'@'localhost';
       - FLUSH PRIVILEGES;
     - or 
-    - ALTER USER 'sagar'@'localhost' IDENTIFIED BY 'newpassword';
+    - ALTER USER '{name}'@'localhost' IDENTIFIED BY 'newpassword';
   - Might have to kill the SQL server
   - sudo lsof -i :8080
   - sudo kill -9 (1234) change the number
@@ -116,6 +116,8 @@ SELECT * FROM health_checks;
 dpkg -l | grep mysql
 or
 rpm -qa | grep MySQL
+
+
 
 
 systemctl status mysql
