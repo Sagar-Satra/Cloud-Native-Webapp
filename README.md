@@ -1,12 +1,12 @@
-# WebApp
- - Description: The following project is a Node.js-based web application built using Express.js that performs Health Check API.
+# Cloud-Native Enterprise Web Application (AWS)
+Developed a production-ready, scalable web application with a fully automated DevOps pipeline. The application codebase and Packer templates (for AMI creation) are maintained in one GitHub repository, while Terraform configurations in a separate repository provision the AWS infrastructure (VPC, EC2 Auto Scaling, Load Balancer, RDS, S3, IAM). This separation of concerns demonstrates best practices in infrastructure as code, immutable infrastructure, and end-to-end automation from application build to cloud deployment.
 
 ## Pre-requisites:
-1. Download and install node from official website.
-2. Download and install MySQL and MySQL workbench.
-3. Download and install latest Git version.
+1. Download and install Node from the official website.
+2. Download and install MySQL and MySQL Workbench.
+3. Download and install the latest Git version.
 4. Download and install Postman to test the API endpoints.
-5. Download and install VScode or similar code editors.
+5. Download and install VSCode or a similar code editor.
 
 
 ## Build and Deploy Instructions
@@ -19,7 +19,7 @@
 3. Install the node packages
    using: npn install
 
-4. Create an .env file and mention the variables for local MySQL database:
+4. Create an .env file and mention the variables for the local MySQL database:
    DB_NAME= (set as per each local machine)
     DB_USERNAME= (set as per each local machine)
     DB_PASSWORD= (set as per each local machine)
@@ -28,7 +28,7 @@
 5. Run the application server
    using: node index.js
 
-6. Use REST client or CURL, test the API endpoints
+6. Use a REST client or CURL, test the API endpoints
    using: 
         a. curl -vvvv -X GET http://localhost:{local port running}/healthz
         b. curl -vvvv -X PUT http://localhost:8080/healthz
@@ -38,18 +38,18 @@
 
 
 
-7. Run below command to implement API testing
+7. Run command below to implement API testing
    npm test
 
 8.  Setup for running the script
-   - Download the zip from canvas and place it into a folder and open the cmd and navigate into that directory
+   - Download the zip from Canvas and place it into a folder and open the cmd and navigate into that directory
    - Deploy the droplet and copy the IP address
    - Establish the connection using SSH command: ssh -i C:\Users\{name}\.ssh\do root@IPADDRESS
-   - scp the zip file into the  "/tmp/ directory" using command : scp -i C:\Users\{name}\.ssh\do webapp.zip root@IP:/tmp/
-   - copy the .env and shellscript file into the same folder
+   - scp the zip file into the  "/tmp/ directory" using the command: scp -i C:\Users\{name}\.ssh\do webapp.zip root@IP:/tmp/
+   - Copy the .env and shellscript file into the same folder
    - scp -i C:\Users\{name}\.ssh\do setupapp.sh root@IP:/tmp/
    - scp -i C:\Users\{name}\.ssh\do .env root@IP:/tmp/
-   - Unzip the application file into the /tmp/ directory using command: sudo unzip -o /tmp/webapp.zip -d /tmp/
+   - Unzip the application file into the /tmp/ directory using cthe ommand: sudo unzip -o /tmp/webapp.zip -d /tmp/
    - chmod +x setupapp.sh
    - ./setupapp.sh
    - Move the .env into the web app - sudo mv /tmp/.env /opt/csye6225/webapp/
@@ -71,13 +71,13 @@
   - then node index.js
  
 
-## Git and Github commands
+## Git and GitHub commands
 To delete local machine branches
 git branch -D <branch-name>
 
-## Whole flow of steps in the GitHub
+## Whole flow of steps in GitHub
 1. Create Org
-2. Under Org Setting (Member privileges) allow forking private repo
+2. Under Org Setting (Member privileges), allow forking private repo
 3. Create Repo
 4. Fork Repo into your namespace
 5. Clone that repo to your local git clone
@@ -102,7 +102,7 @@ sudo apt update
 sudo apt install mysql-client-core-8.0
 
 mysql -h csye6225.catg4u6cs0ij.us-east-1.rds.amazonaws.com -u csye6225 -p
-enter the password set in terraform
+Enter the password set in Terraform
 
 SHOW DATABASES;
 USE csye6225;
@@ -118,11 +118,6 @@ or
 rpm -qa | grep MySQL
 
 
-
-
 systemctl status mysql
 or
 service mysql status
-
-
-implemented LB, Autoscaling groups for the instances.
